@@ -12,9 +12,7 @@ export type MoveProjectToAllFormData = {
   projectId: string;
 };
 
-type ReturnData = unknown;
-
-type Options = UseQueryOptions<EdgesCreate, Error, ReturnData>;
+type Options = UseQueryOptions<EdgesCreate, Error, unknown>;
 
 export const useManageEdge = (edgeId?: string, options?: Options) => {
   const { nodeTypeId } = useDataSheetWrapper();
@@ -22,9 +20,9 @@ export const useManageEdge = (edgeId?: string, options?: Options) => {
   const params = useParams();
   const queryClient = useQueryClient();
 
-  const mutation = useMutation<ReturnData, unknown, EdgesCreate>({
+  const mutation = useMutation<unknown, unknown, EdgesCreate>({
     mutationFn: (values: EdgesCreate) => {
-      const url = edgeId ? URL_UPDATE_EDGE.replace(':id', edgeId || '') : URL_CREATE_EDGE;
+      const url = edgeId ? URL_UPDATE_EDGE.replace(':id', edgeId ?? '') : URL_CREATE_EDGE;
       const type = edgeId ? RequestTypes.Put : RequestTypes.Post;
       const body = {
         ...values,
@@ -34,7 +32,7 @@ export const useManageEdge = (edgeId?: string, options?: Options) => {
     },
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries([
-        URL_EDGES_NODE_DATA.replace(':edge_type_id', nodeTypeId || '').replace(':project_id', params.id || ''),
+        URL_EDGES_NODE_DATA.replace(':edge_type_id', nodeTypeId ?? '').replace(':project_id', params.id ?? ''),
       ]);
       options?.onSuccess?.(data);
     },

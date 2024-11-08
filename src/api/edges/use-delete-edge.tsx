@@ -12,7 +12,6 @@ export const useDeleteEdge = (nodeId: string, options?: UseQueryOptions) => {
   const queryClient = useQueryClient();
   const params = useParams();
   const mutation = useMutation({
-    // :TODO replace this with DELETE endpoint url
     mutationFn: () => client.delete(URL_DELETE_EDGE.replace(':id', nodeId)),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries([

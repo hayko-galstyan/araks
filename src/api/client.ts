@@ -21,7 +21,7 @@ client.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // Add a response interceptor
@@ -30,12 +30,12 @@ client.interceptors.response.use(
     return response.data;
   },
   async function (error) {
-    if (error.response.status === 401) {
+    if (error.response?.status === 401) {
       localStorage.removeItem(AUTH_KEYS.USER);
       localStorage.removeItem(AUTH_KEYS.REFRESH_TOKEN);
       localStorage.removeItem(AUTH_KEYS.TOKEN);
       window.location.href = PATHS.SIGN_IN;
-    } else if (error.response.status === 500) {
+    } else if (error.response?.status === 500) {
       window.location.href = PATHS.ERROR_SERVER;
     } else if (error?.response?.status === 403) {
       const access_token = localStorage.getItem(AUTH_KEYS.REFRESH_TOKEN);
@@ -62,8 +62,8 @@ client.interceptors.response.use(
       }
     }
 
-    return Promise.reject(error);
-  }
+    return Promise.reject(error); // #sonarqube
+  },
 );
 
 // eslint-disable-next-line import/no-default-export
