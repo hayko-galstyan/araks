@@ -14,8 +14,8 @@ type Options = UseQueryOptions<ReturnData, Error, ProjectNodeTypePropertyReturnD
 type Result = UseQueryResult<ProjectNodeTypePropertyReturnData>;
 
 export const useGetProjectEdgeTypeProperty = (propertyId?: string, options?: Options): Result => {
-  const urlNodes = GET_PROJECT_EDGE_TYPE_PROPERTY.replace(':edge_property_id', propertyId || '');
-  const templateUrl = GET_TEMPLATE_EDGE_TYPE_PROPERTY.replace(':edge_property_id', propertyId || '');
+  const urlNodes = GET_PROJECT_EDGE_TYPE_PROPERTY.replace(':edge_property_id', propertyId ?? '');
+  const templateUrl = GET_TEMPLATE_EDGE_TYPE_PROPERTY.replace(':edge_property_id', propertyId ?? '');
 
   const isTemplateEditPage = useIsTemplateEditPage();
   const result = useQuery({

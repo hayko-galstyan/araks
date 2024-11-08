@@ -16,16 +16,12 @@ type Result = UseQueryResult<NodeDataListResponse> & {
   count: number;
 };
 
-export const GetTypeNodes = (
-  queryParams: PageParameters,
-  typeId?: string,
-  options?: Options
-): Result => {
+export const GetTypeNodes = (queryParams: PageParameters, typeId?: string, options?: Options): Result => {
   const isPublicPage = useIsPublicPage();
   const params = useParams();
   const urlNodes = (isPublicPage ? URL_PUBLIC_NODES_LIST : URL_NODES_LIST)
-    .replace(':project_type_id', typeId || '')
-    .replace(':project_id', params.id || '');
+    .replace(':project_type_id', typeId ?? '')
+    .replace(':project_id', params.id ?? '');
   const result = useQuery({
     queryKey: [urlNodes, queryParams],
     queryFn: () => client.get(urlNodes, { params: queryParams }).then((data) => data.data),

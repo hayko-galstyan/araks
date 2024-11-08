@@ -26,7 +26,7 @@ type Result = UseQueryResult<ProjectFullInfo>;
 export const useGetProjectInfo = (params: GetProjectParam, options: Options = { enabled: true }): Result => {
   const isPublicPage = useIsPublicPage();
 
-  const url = (isPublicPage ? GET_PUBLIC_PROJECT_INFO_DATA : GET_PROJECT_INFO_DATA).replace(':id', params?.id || '');
+  const url = (isPublicPage ? GET_PUBLIC_PROJECT_INFO_DATA : GET_PROJECT_INFO_DATA).replace(':id', params?.id ?? '');
   const result = useQuery({
     queryKey: [url, params],
     queryFn: () => client.get(url, { params }),

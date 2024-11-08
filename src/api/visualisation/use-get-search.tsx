@@ -42,7 +42,7 @@ type ProjectResponse = {
       id: string;
       label: string;
       color: string;
-    }
+    },
   ];
   nodeProperties: NodeProperty[];
 };
@@ -72,7 +72,7 @@ type Result = {
   isInitialLoading: boolean;
 } & GetNeo4jData;
 
-export const useGetSearchData = (options: Options = { enabled: false }, search: string): Result => {
+export const useGetSearchData = (search: string, options: Options = { enabled: false }): Result => {
   const params = useParams();
 
   const isPublicPage = useIsPublicPage();

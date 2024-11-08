@@ -67,8 +67,8 @@ type QueryResponse = {
 
 export const useGetUserGlobalSearch = (
   url: string,
+  search: string,
   options: Options = { enabled: false },
-  search: string
 ): QueryResponse => {
   const result = useQuery({
     queryKey: [url, search],

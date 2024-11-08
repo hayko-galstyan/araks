@@ -24,7 +24,7 @@ export const useGetProjectsEdgeTypeProperties = (edgeypeId?: string, options?: O
     isPublicPage ? GET_PUBLIC_PROJECT_EDGE_TYPE_PROPERTIES_LIST : GET_PROJECT_EDGE_TYPE_PROPERTIES_LIST
   ).replace(':edge_type_id', edgeypeId || '');
 
-  const urlTemplate = GET_TEMPLATE_EDGE_TYPE_PROPERTIES_LIST.replace(':edge_type_id', edgeypeId || '');
+  const urlTemplate = GET_TEMPLATE_EDGE_TYPE_PROPERTIES_LIST.replace(':edge_type_id', edgeypeId ?? '');
 
   const result = useQuery({
     queryKey: [isTemplateEditPage ? urlTemplate : urlNodes],

@@ -13,10 +13,8 @@ import { errorMessage } from 'helpers/utils';
 export const URL_CREAT_PROJECT = '/projects/create';
 export const URL_UPDATE_PROJECT = '/projects/update/:id';
 
-export type ManageProjectUrlProp = string;
-
 type Response = UseMutationResult<ProjectFullInfo, CreateOverviewFormData>;
-export const useManageProject = (url: ManageProjectUrlProp, type: RequestType = RequestTypes.Post) => {
+export const useManageProject = (url: string, type: RequestType = RequestTypes.Post) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const mutation = useMutation<Response, unknown, CreateOverviewFormData>({

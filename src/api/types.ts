@@ -188,8 +188,6 @@ export interface IPerspectiveTypes {
   project_node_type_id: string;
 }
 
-export type IProjectTypeData = ProjectFullInfo;
-
 export type ProjectTypePropertyReturnData = {
   created_at: string;
   default_property: boolean;

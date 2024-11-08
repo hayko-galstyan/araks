@@ -21,9 +21,9 @@ type Result = UseQueryResult<ConnectionSourcesSearchResponse> & {
 
 export const useGetConnectionSourceSearch = (queryParams: SearchParams, typeId?: string, options?: Options): Result => {
   const params = useParams();
-  const urlNodes = URL_GET_CONNECTION_SOURCE_LIST.replace(':project_type_id', typeId || '').replace(
+  const urlNodes = URL_GET_CONNECTION_SOURCE_LIST.replace(':project_type_id', typeId ?? '').replace(
     ':project_id',
-    params.id || ''
+    params.id ?? '',
   );
   const result = useQuery({
     queryKey: [urlNodes, queryParams],

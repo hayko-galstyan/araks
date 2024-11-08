@@ -32,11 +32,11 @@ export const useCreateTypeProperty = (options: Options, nodeTypePropertyId?: str
       const type = values.propertyId ? RequestTypes.Put : RequestTypes.Post;
 
       const url = values.propertyId
-        ? URL_PROJECT_NODE_TYPE_PROPERTY_UPDATE.replace(':id', values.propertyId || '')
+        ? URL_PROJECT_NODE_TYPE_PROPERTY_UPDATE.replace(':id', values.propertyId ?? '')
         : URL_PROJECT_NODE_TYPE_PROPERTY_CREATE;
 
       const urlTemplate = values.propertyId
-        ? URL_TEMPLATE_NODE_TYPE_PROPERTY_UPDATE.replace(':id', values.propertyId || '')
+        ? URL_TEMPLATE_NODE_TYPE_PROPERTY_UPDATE.replace(':id', values.propertyId ?? '')
         : URL_TEMPLATE_NODE_TYPE_PROPERTY_CREATE;
 
       const { propertyId, ...data } = values;
@@ -48,17 +48,17 @@ export const useCreateTypeProperty = (options: Options, nodeTypePropertyId?: str
 
       return client[type](
         isTemplateEditPage ? urlTemplate : url,
-        isTemplateEditPage ? { template_node_type_id: body.project_type_id, ...data } : body
+        isTemplateEditPage ? { template_node_type_id: body.project_type_id, ...data } : body,
       );
     },
     onSuccess: (data, variables, context) => {
       if (isTemplateEditPage) {
-        queryClient.invalidateQueries([GET_TEMPLATE.replace(':id', params.id || '')]);
+        queryClient.invalidateQueries([GET_TEMPLATE.replace(':id', params.id ?? '')]);
       } else {
-        queryClient.invalidateQueries([GET_TYPES.replace(':project_id', params.id || '')]);
+        queryClient.invalidateQueries([GET_TYPES.replace(':project_id', params.id ?? '')]);
 
         queryClient.invalidateQueries([
-          GET_PROJECT_NODE_TYPE_PROPERTY.replace(':type_property_id', nodeTypePropertyId || ''),
+          GET_PROJECT_NODE_TYPE_PROPERTY.replace(':type_property_id', nodeTypePropertyId ?? ''),
         ]);
       }
 

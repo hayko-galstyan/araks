@@ -8,7 +8,6 @@ import { useMemo } from 'react';
 export const URL_GET_NODE_EDGE_TYPES_LIST = '/projects-edge-type/list/:project_id';
 export const URL_GET_NODE_EDGE_TYPES_LIST_LEFT_MENU = '/projects-edge-type/left-bar/:project_id';
 
-
 export const GET_PUBLIC_GET_NODE_EDGE_TYPES_LIST = '/public/:project_id/edge-types';
 
 type GetProjectParam = {
@@ -32,9 +31,9 @@ type Result = UseQueryResult<NodeEdgeTypesReturnData[]> & { formatted: TreeConne
 
 export const useGetNodeEdgeTypes = (
   { url, ...params }: GetProjectParam,
-  options: Options = { enabled: true }
+  options: Options = { enabled: true },
 ): Result => {
-  const urlNodes = url.replace(':id', params?.id || '').replace(':project_id', params?.projectId || '');
+  const urlNodes = url.replace(':id', params?.id ?? '').replace(':project_id', params?.projectId ?? '');
   const result = useQuery({
     queryKey: [urlNodes, params],
     queryFn: () => client.get(urlNodes, { params }),

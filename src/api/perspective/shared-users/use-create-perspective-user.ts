@@ -43,11 +43,11 @@ export const useCreatePerspectiveUser = (options: Options, id?: string) => {
       return client[type](url, values);
     },
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries([GET_PERSPECTIVES_USERS.replace(':perspectiveId', id || '')]);
-      queryClient.invalidateQueries([GET_PERSPECTIVES_DATA.replace(':project_id', params?.id || '')]);
-      queryClient.invalidateQueries([GET_PERSPECTIVE.replace(':id', id || '')]);
+      queryClient.invalidateQueries([GET_PERSPECTIVES_USERS.replace(':perspectiveId', id ?? '')]);
+      queryClient.invalidateQueries([GET_PERSPECTIVES_DATA.replace(':project_id', params?.id ?? '')]);
+      queryClient.invalidateQueries([GET_PERSPECTIVE.replace(':id', id ?? '')]);
       queryClient.invalidateQueries([
-        USE_GET_ALL_MEMBERS.replace(':project_id', params.id || ''),
+        USE_GET_ALL_MEMBERS.replace(':project_id', params.id ?? ''),
         { page: 1, size: 10, search: '' },
       ]);
       options?.onSuccess?.(data);

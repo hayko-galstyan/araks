@@ -16,8 +16,8 @@ type Result = UseQueryResult<EdgeTypePropertiesResponse>;
 
 export const useGetEdge = (edgeId?: string, options?: Options): Result => {
   const isTemplateEditPage = useIsTemplateEditPage();
-  const urlNodes = GET_EDGE.replace(':id', edgeId || '');
-  const templateUrl = GET_TEMPLATE_EDGE.replace(':id', edgeId || '');
+  const urlNodes = GET_EDGE.replace(':id', edgeId ?? '');
+  const templateUrl = GET_TEMPLATE_EDGE.replace(':id', edgeId ?? '');
   const result = useQuery({
     queryKey: [isTemplateEditPage ? templateUrl : urlNodes],
     queryFn: () => client.get(isTemplateEditPage ? templateUrl : urlNodes),

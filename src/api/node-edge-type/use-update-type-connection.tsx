@@ -23,7 +23,7 @@ type QueryResponse = {
 type Options = UseQueryOptions<QueryResponse, Error, ReturnData>;
 
 export const useUpdateProjectEdgeType = (propertyId?: string, options?: Options) => {
-  const url = URL_PROJECT_EDGE_TYPES_UPDATE.replace(':propertyId', propertyId || '');
+  const url = URL_PROJECT_EDGE_TYPES_UPDATE.replace(':propertyId', propertyId ?? '');
 
   const mutation = useMutation<ReturnData, unknown, ProjectEdgeTypeSubmit>({
     mutationFn: ({ ...values }: ProjectEdgeTypeSubmit) => {

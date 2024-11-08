@@ -23,7 +23,7 @@ type Result = { shared: ISharedPerspectiveUserData[] };
 export const GET_PERSPECTIVES_USERS = '/perspectives/:perspectiveId';
 
 export const useGetPerspectiveUsers = (params: GetProjectParam, options: Options = { enabled: true }): Result => {
-  const url = GET_PERSPECTIVES_USERS.replace(':perspectiveId', params?.id || '');
+  const url = GET_PERSPECTIVES_USERS.replace(':perspectiveId', params?.id ?? '');
   const result = useQuery({
     queryKey: [url, params],
     queryFn: () => client.get(url),
