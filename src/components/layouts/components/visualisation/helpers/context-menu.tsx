@@ -12,16 +12,88 @@ import {
 import PluginBase from '@antv/g6-plugin/lib/base';
 import { nodeLabelCfgStyle } from './constants';
 
+// #sonarqube
+
+const handleNodeMenuClick = async (
+  target: HTMLElement,
+  item: any,
+  graph: Graph,
+  startShortestPath: (params: { id: string }) => void,
+  startDeleteNode: (params: { id: string }) => void,
+  setGraphInfo: (info: any) => void,
+) => {
+  const submenuClass = target.parentElement?.className;
+  const isSubMenu = submenuClass === 'submenu' || submenuClass === 'right-section';
+
+  if (isSubMenu) {
+    await expand(graph, item, target, setGraphInfo);
+    graph.fitView(0, { ratioRule: 'max', direction: 'both', onlyOutOfViewPort: true }, true);
+  } else {
+    switch (target.className) {
+      case 'shortest-path':
+        startShortestPath({ id: item.getID() });
+        break;
+      case 'delete':
+        startDeleteNode({ id: item.getID() });
+        break;
+      case 'focus':
+        graph.clear();
+        graph.addItem('node', {
+          ...item.getModel(),
+          labelCfg: nodeLabelCfgStyle,
+        });
+        await expandByNodeData(
+          graph,
+          item,
+          item.getID(),
+          (item.getModel() as { label: string }).label ?? '',
+          'all',
+          setGraphInfo,
+        );
+        graph.fitView(0, { ratioRule: 'min', direction: 'both', onlyOutOfViewPort: false }, true);
+        break;
+      default:
+        // startOpenNode({ id: item.getID() });
+        break;
+    }
+  }
+};
+
+const handleOtherTypesClick = (
+  type: string,
+  target: HTMLElement,
+  item: any,
+  startDeleteEdge: (params: { id: string }) => void,
+  startDeleteNode: (params: { id: string; ids?: string[] }) => void,
+  graph: Graph,
+  startOpenNodeCreate: (params: { isOpened: boolean }) => void,
+) => {
+  if (type === 'edge') {
+    startDeleteEdge({ id: item.getID() });
+  } else if (type === 'combo') {
+    const nodesId = item?._cfg?.nodes?.map((node: { _cfg: { id: string } }) => node._cfg.id) || [];
+    if (target.className === 'delete') startDeleteNode({ id: undefined, ids: nodesId });
+  } else {
+    if (target?.className === 'export') {
+      graph.downloadFullImage('default_graph', 'image/png', {
+        backgroundColor: '#F2F2F2',
+      });
+    } else {
+      startOpenNodeCreate({ isOpened: true });
+    }
+  }
+};
+
 export const contextMenuPlugin: (
   graph: Graph,
   items: PickVisualizationContextType,
   isEdit: boolean,
-  showShortestPath: boolean
+  showShortestPath: boolean,
 ) => PluginBase = (
   graph,
   { startOpenNodeCreate, startShortestPath, startDeleteNode, startDeleteEdge, setGraphInfo },
   isEdit,
-  showShortestPath
+  showShortestPath,
 ) => {
   const getContent = (evt: IG6GraphEvent | undefined) => {
     removeTooltip(graph);
@@ -41,7 +113,7 @@ export const contextMenuPlugin: (
       id,
       isNode,
       isEdit,
-      showShortestPath
+      showShortestPath,
     );
     if (isNode) {
       updateExpandList(id, graph.getEdges());
@@ -55,61 +127,10 @@ export const contextMenuPlugin: (
     handleMenuClick: async (target, item) => {
       const type = item?._cfg?.type || '';
       if (type === 'node') {
-        const submenuClass = target.parentElement?.className;
-
-        const isSubMenu = submenuClass === 'submenu' || submenuClass === 'right-section';
-
-        if (isSubMenu) {
-          await expand(graph, item, target, setGraphInfo);
-          graph.fitView(0, { ratioRule: 'max', direction: 'both', onlyOutOfViewPort: true }, true);
-        } else {
-          switch (target.className) {
-            case 'shortest-path': {
-              startShortestPath({ id: item.getID() });
-              break;
-            }
-            case 'delete': {
-              startDeleteNode({ id: item.getID() });
-              break;
-            }
-            case 'focus': {
-              graph.clear();
-
-              graph.addItem('node', {
-                ...item.getModel(),
-                labelCfg: nodeLabelCfgStyle,
-              });
-
-              await expandByNodeData(
-                graph,
-                item,
-                item.getID(),
-                (item.getModel() as { label: string }).label ?? '',
-                'all',
-                setGraphInfo
-              );
-              graph.fitView(0, { ratioRule: 'min', direction: 'both', onlyOutOfViewPort: false }, true);
-
-              break;
-            }
-            default: // startOpenNode({ id: item.getID() });
-          }
-        }
-      } else if (type === 'edge') {
-        startDeleteEdge({ id: item.getID() });
-      } else if (type === 'combo') {
-        const nodesId = item?._cfg?.nodes?.map((node: { _cfg: { id: string } }) => node._cfg.id) || [];
-        if (target.className === 'delete') startDeleteNode({ id: undefined, ids: nodesId });
+        await handleNodeMenuClick(target, item, graph, startShortestPath, startDeleteNode, setGraphInfo);
       } else {
-        if (target?.className === 'export') {
-          graph.downloadFullImage('default_graph', 'image/png', {
-            backgroundColor: '#F2F2F2',
-          });
-        } else {
-          startOpenNodeCreate({ isOpened: true });
-        }
+        handleOtherTypesClick(type, target, item, startDeleteEdge, startDeleteNode, graph, startOpenNodeCreate);
       }
-
       addTooltip(graph);
     },
     offsetX: 16 + 10,
