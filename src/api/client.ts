@@ -59,6 +59,7 @@ client.interceptors.response.use(
           window.location.href = PATHS.SIGN_IN;
           await axios.post(process.env.REACT_APP_BASE_URL + 'auth/logout');
         }
+        return Promise.reject(postError); // #sonarqube
       }
     }
 
