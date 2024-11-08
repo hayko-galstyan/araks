@@ -1,0 +1,97 @@
+.document-table .ant-table-cell-scrollbar {
+    display: none;
+}
+
+.document-table .ant-table-content {
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.document-table .ant-table-header {
+    background: transparent !important;
+}
+
+.document-table .ant-table,
+.document-table .ant-table-thead .ant-table-cell {
+    background: transparent !important;
+}
+
+.document-table .ant-table-thead > tr > .ant-table-cell {
+    color: #959595 !important;
+    font-size: 18px !important;
+    letter-spacing: 0.07em !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.document-table .ant-table .ant-typography {
+    letter-spacing: 0.07em !important;
+    color: #232F6A !important;
+}
+
+.document-table .ant-table-body {
+    height: calc(100vh - 400px);
+}
+
+.document-table .ant-table-tbody > tr > td {
+    border-bottom: 1px solid #C3C3C3 !important;
+    padding: 0 1rem !important;
+}
+
+.document-table .ant-table-row:hover > .ant-table-cell {
+    background: #e9e9e99e !important;
+}
+
+.document-table .document-name-cell {
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.document-table .document-name-cell .file-icon {
+    width: 32px;
+    display: flex;
+}
+
+.document-table .document-name-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.document-table .similar-docs-cell {
+    width: 200px;
+    cursor: pointer;
+    display: flex;
+}
+
+@media screen and (max-width: 768px) {
+    .document-table .ant-table-cell {
+        white-space: nowrap;
+    }
+
+    .document-table .document-name-cell,
+    .document-table .similar-docs-cell {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .document-table .document-name-cell .file-icon {
+        margin-bottom: 5px;
+    }
+
+    .document-table .document-name-text,
+    .document-table .similar-docs-cell {
+        white-space: normal;
+        word-wrap: break-word;
+    }
+
+    .document-table .ant-table-thead > tr > .ant-table-cell {
+        font-size: 16px !important;
+    }
+}

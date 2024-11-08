@@ -1,0 +1,11 @@
+.perspective-drawer {
+  overflow: hidden;
+}
+
+.perspective-drawer .ant-drawer-header-title {
+  flex-direction: row-reverse;
+}
+
+.perspective-drawer .ant-drawer-close {
+  margin-inline-end: 0;
+}

@@ -1,0 +1,116 @@
+import React, { useCallback } from 'react';
+import { FitType } from './action/fit-type';
+import { FitSchema } from './action/fit-schema';
+import { ZoomIn } from './action/zoom-in';
+import { ZoomOut } from './action/zoom-out';
+import { useSchema } from 'components/layouts/components/schema/wrapper';
+import { LINE_HEIGHT } from 'components/layouts/components/schema/container/register/node';
+import { animateGraphFit } from 'components/layouts/components/schema/helpers/utils';
+import { ToolbarWrapper } from './wrapper';
+import { useGraph } from '../layouts/components/visualisation/wrapper';
+import { Graph } from '@antv/x6';
+
+type Props = React.FC<{
+  position: string;
+  isTemplate?: boolean;
+  isTemplatePreview?: boolean;
+  graph_preview?: Graph;
+}>;
+
+export const Toolbar: Props = ({ position, isTemplate, isTemplatePreview, graph_preview }) => {
+  const { graph: graphData, selected } = useSchema() || {};
+
+  const graph = graph_preview ?? graphData;
+
+  const onCenterType = useCallback(() => {
+    /** calculate height of type before fit on center */
+    if (selected.node !== undefined) {
+      animateGraphFit(graph, '0.4s');
+
+      graph.zoom(0.5, {
+        minScale: 2,
+        maxScale: 2,
+      });
+
+      const propertiesHeight = selected.node.ports.items.length * LINE_HEIGHT * 2;
+
+      const height = (propertiesHeight + selected.node.getSize().height) / 2;
+
+      graph.options.height = graph.options.height - height;
+
+      graph.centerCell(selected.node);
+
+      /** reset graph height after fit on center */
+      graph.options.height = graph.options.height + height;
+    }
+  }, [graph, selected]);
+
+  const onCenterContent = useCallback(() => {
+    if (graph.zoomToFit !== undefined) {
+      animateGraphFit(graph, '0.4s');
+      graph.zoomToFit({ padding: 10, maxScale: 1 });
+    }
+  }, [graph]);
+
+  const onZoomIn = useCallback(() => {
+    animateGraphFit(graph, '0.05s');
+    graph.zoom(0.1, {
+      minScale: 0.2,
+      maxScale: 3,
+    });
+  }, [graph]);
+
+  const onZoomOut = useCallback(() => {
+    animateGraphFit(graph, '0.05s');
+    graph.zoom(-0.1, {
+      minScale: 0.2,
+      maxScale: 3,
+    });
+  }, [graph]);
+
+  return (
+    <ToolbarWrapper position={position} isTemplate={isTemplate} isTemplatePreview={isTemplatePreview}>
+      <FitType onCenterType={onCenterType} />
+      <FitSchema onCenterContent={onCenterContent} />
+      <div className="box zoom">
+        <ZoomIn onZoomIn={onZoomIn} />
+        <div className="separate" />
+        <ZoomOut onZoomOut={onZoomOut} />
+      </div>
+    </ToolbarWrapper>
+  );
+};
+
+export const ToolbarVisualization = () => {
+  const { graph } = useGraph() || {};
+
+  const onCenterType = useCallback(() => {
+    graph.fitCenter();
+    graph.fitView();
+  }, [graph]);
+
+  const onCenterContent = useCallback(() => {
+    graph.fitCenter();
+    graph.fitView();
+  }, [graph]);
+
+  const onZoomIn = useCallback(() => {
+    graph.zoomTo(graph.getZoom() + 0.1, { x: (window.innerWidth - 480) / 2, y: window.innerHeight / 2 });
+  }, [graph]);
+
+  const onZoomOut = useCallback(() => {
+    graph.zoomTo(graph.getZoom() - 0.1, { x: (window.innerWidth - 480) / 2, y: window.innerHeight / 2 });
+  }, [graph]);
+
+  return (
+    <ToolbarWrapper position="right">
+      <FitType onCenterType={onCenterType} />
+      <FitSchema onCenterContent={onCenterContent} />
+      <div className="box zoom">
+        <ZoomIn onZoomIn={onZoomIn} />
+        <div className="separate" />
+        <ZoomOut onZoomOut={onZoomOut} />
+      </div>
+    </ToolbarWrapper>
+  );
+};
