@@ -9,11 +9,12 @@ import { COLORS } from 'helpers/constants';
 import { TColumnParam } from '../types';
 
 const getTableColumns = (data: TToolData[], params: TColumnParam[]): ColumnType<unknown>[] => {
-  if (!data?.length) return []; 
+  if (!data?.length) return [];
 
   const columns: ColumnType<unknown>[] = [];
 
   // #sonarqube
+
   data.forEach((item) => {
     for (const prop in item) {
       if (Object.prototype.hasOwnProperty.call(item, prop)) {
