@@ -9,7 +9,7 @@ import { COLORS } from 'helpers/constants';
 import { TColumnParam } from '../types';
 
 const getTableColumns = (data: TToolData[], params: TColumnParam[]): ColumnType<unknown>[] => {
-  if (!data || !data.length) return [];
+  if (!data?.length) return []; 
 
   const columns: ColumnType<unknown>[] = [];
 
@@ -41,7 +41,7 @@ const getTableColumns = (data: TToolData[], params: TColumnParam[]): ColumnType<
 };
 
 const getTableData = (data: TToolData[]) => {
-  if (!data || !data.length) return [];
+  if (!data?.length) return []; // Using optional chaining
 
   return data.map((item) => ({
     ...item,
@@ -51,21 +51,21 @@ const getTableData = (data: TToolData[]) => {
 export const AnalyticsTable: React.FC<{ id: string }> = ({ id }) => {
   const { tools, activeBoard } = useAnalytics();
 
-  const selectedTool = tools[activeBoard][id];
+  const selectedTool = tools?.[activeBoard]?.[id]; // Using optional chaining
 
-  const columns = getTableColumns(selectedTool?.data, selectedTool.params as TColumnParam[]);
-  const tableData = getTableData(selectedTool?.data);
+  const columns = getTableColumns(selectedTool?.data, selectedTool?.params as TColumnParam[]); // Using optional chaining
+  const tableData = getTableData(selectedTool?.data); // Using optional chaining
 
   return (
     <DraggingContainer containerKey={id}>
       <AnalyticDynamicTable
         key={id}
-        style={{ width: selectedTool.width, maxHeight: selectedTool.height }}
+        style={{ width: selectedTool?.width, maxHeight: selectedTool?.height }} // Using optional chaining
         columns={columns}
         dataSource={tableData}
         scroll={{
-          x: selectedTool.width,
-          y: selectedTool.height - 100,
+          x: selectedTool?.width,
+          y: (selectedTool?.height ?? 0) - 100, // Using optional chaining with a fallback
         }}
         pagination={false}
         sticky
