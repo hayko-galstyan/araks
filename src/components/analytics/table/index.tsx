@@ -12,27 +12,31 @@ const getTableColumns = (data: TToolData[], params: TColumnParam[]): ColumnType<
   if (!data || !data.length) return [];
 
   const columns: ColumnType<unknown>[] = [];
-  for (let i = 0; i < data.length; i++) {
-    for (const prop in data[i]) {
-      const data = params.find((item: TColumnParam) => item.axis === prop);
-      if (data) {
-        const title = `${data.project_type_name}.${data.property_type_name}`;
-        columns.push({
-          key: prop,
-          title: (
-            <Tooltip
-              title={title}
-              color={COLORS.PRIMARY.BLUE}
-            >{`${data.project_type_name}.${data.property_type_name}`}</Tooltip>
-          ),
-          dataIndex: prop,
-          ellipsis: true,
-          width: 80,
-        });
+
+  // #sonarqube
+  data.forEach((item) => {
+    for (const prop in item) {
+      if (Object.prototype.hasOwnProperty.call(item, prop)) {
+        const columnParam = params.find((param: TColumnParam) => param.axis === prop);
+        if (columnParam && !columns.some((column) => column.key === prop)) {
+          const title = `${columnParam.project_type_name}.${columnParam.property_type_name}`;
+          columns.push({
+            key: prop,
+            title: (
+              <Tooltip
+                title={title}
+                color={COLORS.PRIMARY.BLUE}
+              >{`${columnParam.project_type_name}.${columnParam.property_type_name}`}</Tooltip>
+            ),
+            dataIndex: prop,
+            ellipsis: true,
+            width: 80,
+          });
+        }
       }
     }
-    return columns;
-  }
+  });
+
   return columns;
 };
 
