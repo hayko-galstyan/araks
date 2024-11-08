@@ -20,6 +20,8 @@ import { PropertyEnumDetails } from '../../property/property-enum-details';
 import { Dispatch, SetStateAction } from 'react';
 import { ProjectNodeTypePropertyReturnData } from 'api/types';
 
+// #sonarrube
+
 interface CreateTarget {
   selected?: string | undefined;
   isOpen: boolean;
@@ -33,6 +35,7 @@ interface Props {
   setCreateTarget: Dispatch<SetStateAction<CreateTarget | undefined>>;
   data?: ProjectNodeTypePropertyReturnData;
 }
+
 export const TypePropertyFormItems = ({
   isEdit = false,
   hide,
@@ -50,7 +53,6 @@ export const TypePropertyFormItems = ({
   const onHandleCancel = () => {
     dispatch({ type: TypePropertyActionKind.ADD_TYPE_CANCEL, payload: { titleText: undefined } });
     hide?.();
-    // form.resetFields();
   };
 
   /** this action works only for edit */
@@ -58,15 +60,17 @@ export const TypePropertyFormItems = ({
     dispatch({ type: TypePropertyActionKind.DELETE_TYPE_START, payload: {} });
     hide?.();
   };
-  !isEdit && !isConnectionType &&
+
+  !isEdit &&
+    !isConnectionType &&
     form.setFieldsValue({
       ref_property_type_id: dataType || PropertyTypes.Text,
     });
 
   const dataSelectItem = (
     <FormItem
-      name="ref_property_type_id"
-      label="Data type"
+      name='ref_property_type_id'
+      label='Data type'
       rules={[{ required: true, message: 'Node property data type is required' }]}
       hidden={isConnectionType === true || form.getFieldValue('default_property')}
     >
@@ -74,11 +78,21 @@ export const TypePropertyFormItems = ({
     </FormItem>
   );
 
+  // Validator function with explicit type for value
+  const validatePropertyName = async (_: Rule, value: string | undefined) => {
+    if (value && !/^[a-z][a-z0-9_]*$/.test(value)) {
+      return Promise.reject(
+        'Name must start with a letter and contain only lowercase letters, numbers and underscores',
+      );
+    }
+    return Promise.resolve();
+  };
+
   return (
     <>
       <Space size={8}>
         <Text>{isConnectionType ? 'Create Connection type' : isEdit ? 'Edit Property' : 'Add property for type'}</Text>
-        <UsefulInformationTooltip infoText="Inherit parent options" />
+        <UsefulInformationTooltip infoText='Inherit parent options' />
       </Space>
       {!isConnectionType && dataType === PropertyTypes.Connection && isEdit ? (
         <ConnectionPropertyFormItems
@@ -93,7 +107,7 @@ export const TypePropertyFormItems = ({
         <>
           {!form.getFieldValue('default_property') && !data?.default_image && (
             <FormItem
-              name="name"
+              name='name'
               label={isConnectionType ? 'Connection name' : 'Property name'}
               rules={[
                 {
@@ -108,17 +122,7 @@ export const TypePropertyFormItems = ({
                 },
                 { max: 30, message: 'The maximum length for this field is 30 characters' },
                 {
-                  validator: async (_: Rule, value: string | undefined) => {
-                    if (value !== undefined && value !== '') {
-                      const regex = /^[a-z][a-z0-9_]*$/;
-                      if (!regex.test(value)) {
-                        return Promise.reject(
-                          'Name must start with a letter and contain only lowercase letters, numbers and underscores'
-                        );
-                      }
-                    }
-                    return Promise.resolve();
-                  },
+                  validator: validatePropertyName,
                 },
               ]}
             >
@@ -134,16 +138,16 @@ export const TypePropertyFormItems = ({
               {isEdit ? (
                 <EditNodePropertyTypeInfoModal id={data?.id} initPropertyType={dataType} />
               ) : (
-                <Button block type="primary" htmlType="submit">
+                <Button block type='primary' htmlType='submit'>
                   Save
                 </Button>
               )}
               {isEdit && !data?.default_image ? (
-                <Button block type="text" onClick={onHandleDelete} disabled={data?.default_property}>
+                <Button block type='text' onClick={onHandleDelete} disabled={data?.default_property}>
                   Delete
                 </Button>
               ) : (
-                <Button block type="text" onClick={onHandleCancel}>
+                <Button block type='text' onClick={onHandleCancel}>
                   Cancel
                 </Button>
               )}
