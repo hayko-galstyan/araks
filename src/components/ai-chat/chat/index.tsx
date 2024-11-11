@@ -16,9 +16,9 @@ type IChatProps = {
 type TData = Array<{ text: string }>;
 
 export const Chat: React.FC<IChatProps> = ({ start, onStart, title }) => {
-  const [value, setIsValue] = useState<string>('');
-  const [message, setIsMessage] = useState<string | undefined>(undefined);
-  const [data, setIsData] = useState<TData>([]);
+  const [value, setValue] = useState<string>('');
+  const [message, setMessage] = useState<string | undefined>(undefined);
+  const [data, setData] = useState<TData>([]);
   const chatRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,16 +28,16 @@ export const Chat: React.FC<IChatProps> = ({ start, onStart, title }) => {
 
   const sendMessage = () => {
     if (value.trim()) {
-      setIsData((prev) => [...prev, { text: value }, { text: '' }]);
+      setData((prev) => [...prev, { text: value }, { text: '' }]);
       setIsLoading(true);
-      setIsMessage(value);
-      setIsValue('');
+      setMessage(value);
+      setValue('');
     }
   };
 
   useEffect(() => {
-    if (answer && answer.response) {
-      setIsData((prev) => {
+    if (answer?.response) {
+      setData((prev) => {
         const updatedData = [...prev];
         updatedData[prev.length - 1] = { text: answer.response };
         return updatedData;
@@ -51,7 +51,7 @@ export const Chat: React.FC<IChatProps> = ({ start, onStart, title }) => {
       chatRef.current.scrollTop = chatRef.current.scrollHeight + 100;
     }
     if (!data?.length && start) {
-      setIsData((prev) => [...prev, { text: 'Hello, how can I help you with your graph?' }]);
+      setData((prev) => [...prev, { text: 'Hello, how can I help you with your graph?' }]);
     }
   }, [start, data]);
 
@@ -64,7 +64,7 @@ export const Chat: React.FC<IChatProps> = ({ start, onStart, title }) => {
       <ChatBody ref={chatRef}>
         {data.map((item, index) => (
           <Message
-            key={index}
+            key={`${item.text}-${index}`}
             type={(index + 1) % 2 === 1 ? 'receiver' : 'sender'}
             text={item.text}
             isLoading={isLoading && index === data?.length - 1}
@@ -73,10 +73,10 @@ export const Chat: React.FC<IChatProps> = ({ start, onStart, title }) => {
       </ChatBody>
       <ChatFooter disabled={isLoading}>
         <TextArea
-          placeholder="Please type your response here"
+          placeholder='Please type your response here'
           value={value}
           onKeyDown={(e) => e.key === 'Enter' && !isLoading && sendMessage()}
-          onChange={(e) => setIsValue(e.target.value)}
+          onChange={(e) => setValue(e.target.value)}
         />
         <SendOutlined disabled={isLoading || !value.trim()} onClick={sendMessage} />
       </ChatFooter>
