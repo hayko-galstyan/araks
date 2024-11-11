@@ -11,6 +11,7 @@ import { PATHS } from 'helpers/constants';
 import { GET_SEARCH_GLOBAL_DATA, GET_SEARCH_GROUP_PROJECTS_DATA } from 'api/user/constants';
 import { useGetSelectedSearchData } from 'api/visualisation/use-get-selected-search';
 import { renderProperty } from './options/property-type';
+import { renderComments } from './options/comments';
 
 enum ProjectPrivacy {
   PUBLIC = 'public',
@@ -21,12 +22,14 @@ type TVisualizationType = {
   nodeType: boolean;
   propertyType: boolean;
   node: boolean;
+  comments: true;
 };
 
 const visualizationType: TVisualizationType = {
   nodeType: true,
   propertyType: true,
   node: true,
+  comments: true,
 };
 
 type SearchItem = {
@@ -51,9 +54,11 @@ type ISearchProps = {
 
 export const Search = ({ typeSearch, onSetIsProjectId, group, setIsProjectListId, placeholder }: ISearchProps) => {
   const [search, setSearch] = useState<string>('');
-  const [project, setProject] = useState({
+  const [project, setProject] = useState<{ id: string; privacy: boolean; node_id: string | undefined , autoCommentsIsOpen:boolean}>({
     id: '',
     privacy: false,
+    node_id: '',
+    autoCommentsIsOpen: false,
   });
   const navigate = useNavigate();
 
@@ -73,6 +78,8 @@ export const Search = ({ typeSearch, onSetIsProjectId, group, setIsProjectListId
       navigate(`${url}`.replace(':id', project.id), {
         state: {
           data: data.data,
+          autoCommentsIsOpen: project.autoCommentsIsOpen,
+          node_id: project.node_id
         },
       });
     },
@@ -99,6 +106,14 @@ export const Search = ({ typeSearch, onSetIsProjectId, group, setIsProjectListId
         renderNodes(project_id, id, title, color, name, privacy, default_image, icon, node_type)
       ) ?? [],
     [data?.nodes]
+  );
+  const comments = useMemo(
+    () =>
+      data?.comments?.map(
+        ({ id, project_id, privacy, title, icon, color, node_id, name, node_type, default_image, comments }) =>
+          renderComments(id, project_id, privacy, title, icon, color, node_id, name, node_type, default_image, comments)
+      ) ?? [],
+    [data?.comments]
   );
 
   const properties = useMemo(
@@ -167,6 +182,12 @@ export const Search = ({ typeSearch, onSetIsProjectId, group, setIsProjectListId
       options: properties,
     });
   }
+  if (comments?.length > 0) {
+    options.push({
+      label: renderTitle('Comments'),
+      options: comments,
+    });
+  }
 
   const onSelect = (id: string | unknown, item: { mode: string } | unknown) => {
     const { mode } = item as { mode: string };
@@ -175,8 +196,8 @@ export const Search = ({ typeSearch, onSetIsProjectId, group, setIsProjectListId
       nodeType: nodeTypes,
       node: nodes,
       propertyType: properties,
+      comments: comments,
     };
-
     const list = listMap[mode] || projects;
 
     const type = list?.find((data) => data.value === id) as SearchItem;
@@ -187,10 +208,15 @@ export const Search = ({ typeSearch, onSetIsProjectId, group, setIsProjectListId
 
     const isVisualization = visualizationType[mode as keyof TVisualizationType];
 
-    const action_id = mode === 'propertyType' ? type?.node_id : type?.id;
+    const action_id = mode === 'propertyType' || mode === 'comments' ? type?.node_id : type?.id;
 
     if (isVisualization) {
-      setProject({ id: type?.project_id || '', privacy: type?.privacy === ProjectPrivacy.PUBLIC });
+      setProject({
+        id: type?.project_id || '',
+        privacy: type?.privacy === ProjectPrivacy.PUBLIC,
+        autoCommentsIsOpen: type?.mode === 'comments',
+        node_id: type && type.mode && type?.mode === 'comments' ? type.node_id : undefined,
+      });
       mutate({ id: action_id || '', action: action, _ts: new Date().getTime() });
     } else {
       setIsProjectListId && setIsProjectListId(type?.id ?? '');

@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  PieChart as Chart,
-  Pie,
-  Cell,
-  Legend,
-  Tooltip as ChartTooltip,
-  ResponsiveContainer,
-  TooltipProps,
-} from 'recharts';
+import { PieChart as Chart, Pie, Cell, Legend, Tooltip as ChartTooltip, TooltipProps } from 'recharts';
 import { AnyObject } from 'antd/es/_util/type';
 import { Badge, Flex, Tooltip } from 'antd';
 import { Text } from 'components/typography';
@@ -69,31 +61,29 @@ export const PieChart: React.FC<TChartParams> = ({ width, height, params }) => {
   const { data, params: axisData, color, legend } = params;
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
-      <Chart width={width} height={height} key={params.id}>
-        <Pie
-          data={data}
-          color={color}
-          dataKey="y"
-          nameKey="x"
-          label={(entry) => valueFormatter(entry.value, 15)}
-          cx="50%"
-          cy="50%"
-        >
-          {data.map((entry: TDataItem, index: number) => (
-            <Cell key={`cell-${index}`} fill={params.colors[index]} stroke={params.colors[index]} strokeWidth={2} />
-          ))}
-        </Pie>
-        <ChartTooltip content={<CustomTooltip axisData={axisData} />} />
-        {legend && (
-          <Legend
-            content={<CustomLegend height={height} payload={data} />}
-            layout="vertical"
-            align="right"
-            verticalAlign="top"
-          />
-        )}
-      </Chart>
-    </ResponsiveContainer>
+    <Chart width={width} height={height} key={params.id}>
+      <Pie
+        data={data}
+        color={color}
+        dataKey="y"
+        nameKey="x"
+        label={(entry) => valueFormatter(entry.value, 15)}
+        cx="50%"
+        cy="50%"
+      >
+        {data.map((entry: TDataItem, index: number) => (
+          <Cell key={`cell-${index}`} fill={params.colors[index]} stroke={params.colors[index]} strokeWidth={2} />
+        ))}
+      </Pie>
+      <ChartTooltip content={<CustomTooltip axisData={axisData} />} />
+      {legend && (
+        <Legend
+          content={<CustomLegend height={height} payload={data} />}
+          layout="vertical"
+          align="right"
+          verticalAlign="top"
+        />
+      )}
+    </Chart>
   );
 };

@@ -6,6 +6,7 @@ import { FuzzyMatchResponseData } from 'api/visualisation/use-create-fuzzy-match
 
 export interface IIdOpen {
   isOpened?: boolean;
+  autoCommentsIsOpen?:boolean;
 }
 
 export interface IOpenIdState extends IIdOpen {

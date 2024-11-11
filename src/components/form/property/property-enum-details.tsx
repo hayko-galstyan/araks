@@ -7,6 +7,8 @@ import { Input } from 'components/input';
 import styled from 'styled-components';
 import { Button } from 'components/button';
 import { SecondaryText } from 'components/typography';
+import { Rule } from 'antd/es/form';
+import { IEnumProperty } from 'types/project-node-types-property';
 
 const StyledButton = styled(Button)`
   padding: 0;
@@ -33,7 +35,7 @@ const Wrapper = styled.div`
 
 export const PropertyEnumDetails = () => {
   const dataType = Form.useWatch('ref_property_type_id');
-  const enums: unknown[] = Form.useWatch('enums_data');
+  const enums: IEnumProperty[] = Form.useWatch('enums_data');
 
   return (
     <>
@@ -57,32 +59,32 @@ export const PropertyEnumDetails = () => {
                           key={field.key}
                           rules={[
                             { required: true, message: 'Enum name is required' },
-                            { min: 1, message: 'The minimum length for this field is 1 character' },
+                            { min: 1, message: 'The minimum length for this field is 1 characters' },
                             { max: 30, message: 'The maximum length for this field is 30 characters' },
                             {
-                              validator: async (_: unknown, value: string | undefined) => {
+                              validator: async (_: Rule, value: string | undefined) => {
                                 if (!value) return Promise.resolve();
 
                                 if (value !== undefined) {
                                   const regex = /^[a-zA-Z0-9 _]+$/;
                                   if (!regex.test(value)) {
                                     return Promise.reject(
-                                      'Name must only contain lowercase letters, numbers and underscores',
+                                      'Name must only contain lowercase letters, numbers and underscores'
                                     );
                                   }
                                 }
 
                                 const existed = enums.some(
-                                  (e: any, index: number) =>
-                                    !(_ as { field: string }).field.includes(index.toString()) && e?.name === value,
+                                  (e, index) =>
+                                    !(_ as { field: string }).field.includes(index.toString()) && e?.name === value
                                 );
 
-                                if (existed) return Promise.reject('The variant already exists');
+                                if (existed) return Promise.reject('The variant already exist');
 
                                 return Promise.resolve();
                               },
                             },
-                          ]}
+                          ]} 
                         >
                           <Input />
                         </FormItem>
@@ -93,7 +95,7 @@ export const PropertyEnumDetails = () => {
               </Wrapper>
 
               <StyledButton
-                type='link'
+                type="link"
                 onClick={() => add(null)}
                 disabled={fields.length > 14}
                 style={{ margin: '0px 10px' }}

@@ -36,7 +36,12 @@ export const Charts: React.FC<TChart> = ({ id }) => {
         );
       case PIE:
         return (
-          <PieChart key={`pie-${id}-chart`} width={widthChart} height={boardTools[id].height} params={boardTools[id]} />
+          <PieChart
+            key={`pie-${id}-chart`}
+            width={boardTools[id].width}
+            height={boardTools[id].height}
+            params={boardTools[id]}
+          />
         );
       default:
         return null;

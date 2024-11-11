@@ -67,9 +67,7 @@ export type TColumnParam = {
 
 export type THeaderParams = {
   id: string;
-  board: string;
-  title: string | undefined;
-  color: string | undefined;
+  toolAxis: string | undefined;
   isValid: boolean;
 };
 

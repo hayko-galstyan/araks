@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { AddColorIcon } from './components/add-color-icon';
 import { ProjectType } from './components/project-type';
 import { Button } from 'components/button';
-import { URL_CREAT_PROJECT, useManageProject } from 'api/projects/use-manage-project';
+import { ManageProjectUrlProp, URL_CREAT_PROJECT, useManageProject } from 'api/projects/use-manage-project';
 import { CreateOverviewFormData, RequestType, RequestTypes } from 'api/types';
 import { ProjectUserInfo } from './components/project-user-info';
 import { Text } from 'components/typography';
@@ -56,7 +56,7 @@ const Input = styled(InputComponent)`
 `;
 
 type Props = {
-  manageUrl?: string;
+  manageUrl?: ManageProjectUrlProp;
   type?: RequestType;
   setShowUserInfo?: (show: boolean) => void;
 };
@@ -104,7 +104,7 @@ export const ProjectForm = ({ manageUrl = URL_CREAT_PROJECT, type = RequestTypes
           form.setFieldsValue(data.data);
         }
       },
-    },
+    }
   );
 
   const fullName =
@@ -115,32 +115,32 @@ export const ProjectForm = ({ manageUrl = URL_CREAT_PROJECT, type = RequestTypes
   return (
     <Spin spinning={isInitialLoading}>
       <Form
-        name='overview-create'
+        name="overview-create"
         form={form}
         onFinish={onFinish}
-        autoComplete='off'
-        layout='vertical'
+        autoComplete="off"
+        layout="vertical"
         requiredMark={false}
       >
-        <VerticalSpace size={17} className='overview-form-items'>
+        <VerticalSpace size={17} className="overview-form-items">
           <VerticalSpace size={42}>
             <div style={{ width: '100%', display: 'flex', gap: '22px' }}>
               <AddColorIcon />
               <VerticalSpace size={14}>
                 <FormItem
-                  name='title'
+                  name="title"
                   rules={[
                     { required: true, message: 'Title is required' },
                     { min: 3, message: 'The minimum length for this field is 3 characters' },
                   ]}
                   style={{ marginBottom: '0' }}
                 >
-                  <Input placeholder='Untitled' />
+                  <Input placeholder="Untitled" />
                 </FormItem>
                 <ProjectUserInfo createdAt={data?.created_at} updatedAt={data?.updated_at} userFullName={fullName} />
               </VerticalSpace>
             </div>
-            <FormItem name='description' label='Description'>
+            <FormItem name="description" label="Description">
               <TextArea rows={4} />
             </FormItem>
           </VerticalSpace>
@@ -148,14 +148,14 @@ export const ProjectForm = ({ manageUrl = URL_CREAT_PROJECT, type = RequestTypes
           <Text>Privacy</Text>
           <ProjectType />
         </VerticalSpace>
-        <Row align='bottom' justify='end' gutter={[32, 32]} style={{ alignSelf: 'end' }}>
+        <Row align="bottom" justify="end" gutter={[32, 32]} style={{ alignSelf: 'end' }}>
           <Col span={3}>
-            <Button type='text' onClick={handleCancel}>
+            <Button type="text" onClick={handleCancel}>
               Cancel
             </Button>
           </Col>
           <Col span={10} offset={2}>
-            <Button block htmlType='submit' type='primary'>
+            <Button block htmlType="submit" type="primary">
               Save
             </Button>
           </Col>

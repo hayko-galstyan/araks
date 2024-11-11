@@ -6,10 +6,10 @@ const getProjectId: GetProjectId = (path = location.pathname) => path.substring(
 
 export async function DownloadFile(
   nodeTypeIds: string[],
+  isPDF = false,
   token: string,
   nodeId?: string,
-  fileName?: string,
-  isPDF = false,
+  fileName?: string
 ) {
   try {
     const baseUrl = `${process.env.REACT_APP_BASE_URL}`;

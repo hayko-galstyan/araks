@@ -75,4 +75,5 @@ export type TAnalyticsActions =
   | { type: 'REMOVE_BOARD'; payload: string }
   | { type: 'ADD_BOARD_ITEMS'; payload: TAnalyticsBoard[] }
   | { type: 'REMOVE_TOOL_DASHBOARD'; payload: string }
-  | { type: 'CLEAR_BOARD_ITEMS'; payload: string };
+  | { type: 'CLEAR_BOARD_ITEMS'; payload: string }
+  | { type: 'ADD_TABLE_DATA'; payload: AnyObject };

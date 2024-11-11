@@ -16,6 +16,7 @@ export const ACTIONS = {
   SELECT_NODE_TYPE_ID: 'SELECT_NODE_TYPE_ID' as const,
   SET_BOARDS: 'SET_BOARDS' as const,
   ADD_BOARD: 'ADD_BOARD' as const,
+  ADD_TABLE_DATA: 'ADD_TABLE_DATA' as const,
   RENAME_BOARD_NAME: 'RENAME_BOARD_NAME' as const,
   REMOVE_BOARD: 'REMOVE_BOARD' as const,
   REMOVE_TOOL_DASHBOARD: 'REMOVE_TOOL_DASHBOARD' as const,
@@ -74,10 +75,12 @@ export const reducer = (state: TAnalyticsState, action: TAnalyticsActions): TAna
 
       delete tools[payload]; // delete board tools
 
+      const boards = state.boards.filter((board) => board.id !== payload);
+
       return {
         ...state,
-        boards: state.boards.filter((board) => board.id !== payload),
-        activeBoard: state.activeBoard === payload ? state.boards[0].id : state.activeBoard,
+        boards: boards,
+        activeBoard: state.activeBoard === payload ? boards[0].id : state.activeBoard,
         tools: tools,
       };
     }
@@ -201,6 +204,28 @@ export const reducer = (state: TAnalyticsState, action: TAnalyticsActions): TAna
           },
         },
         selectedTool: null,
+      };
+    }
+
+    /* 
+      ADD TABLE DATA PAGINATION
+      params [id, data]
+    */
+
+    case ACTIONS.ADD_TABLE_DATA: {
+      const { tools, activeBoard } = state;
+      const boardTools = tools[activeBoard];
+
+      boardTools[payload.id].data = [...payload.data];
+
+      return {
+        ...state,
+        tools: {
+          ...state.tools,
+          [payload.id]: {
+            ...boardTools,
+          },
+        },
       };
     }
 

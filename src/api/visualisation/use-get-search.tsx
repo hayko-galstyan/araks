@@ -21,6 +21,19 @@ export type EdgeType = {
   source_color: null;
   target_color: null;
 };
+export type CommentsType = {
+  id: string;
+  project_id: string;
+  color:string,
+  default_image?: string;
+  icon?: string;
+  title?:string;
+  node_id: string;
+  privacy:string;
+  name?: string;
+  node_type?:string,
+  comments: string;
+};
 
 export type EdgeProperties = {
   relation: string;
@@ -35,6 +48,7 @@ export type EdgeProperties = {
 };
 
 type ProjectResponse = {
+  comments: CommentsType[];
   edgeTypes: EdgeType[];
   edgeProperties: EdgeProperties[];
   nodeTypes: [
@@ -42,7 +56,7 @@ type ProjectResponse = {
       id: string;
       label: string;
       color: string;
-    },
+    }
   ];
   nodeProperties: NodeProperty[];
 };
@@ -72,7 +86,7 @@ type Result = {
   isInitialLoading: boolean;
 } & GetNeo4jData;
 
-export const useGetSearchData = (search: string, options: Options = { enabled: false }): Result => {
+export const useGetSearchData = (options: Options = { enabled: false }, search: string): Result => {
   const params = useParams();
 
   const isPublicPage = useIsPublicPage();

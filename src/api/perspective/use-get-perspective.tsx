@@ -1,7 +1,7 @@
 import { useQuery, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 import client from 'api/client';
 import { errorMessage } from 'helpers/utils';
-import { IResponsePerspectiveData } from '../types';
+import { IResponsePerspectiveData } from "../types";
 
 export const GET_PERSPECTIVE = '/perspectives/:id';
 
@@ -13,7 +13,7 @@ type Options = UseQueryOptions<ReturnData, Error, IResponsePerspectiveData>;
 type Result = UseQueryResult<IResponsePerspectiveData>;
 
 export const useGetPerspective = (id?: string, options?: Options): Result => {
-  const urlNodes = GET_PERSPECTIVE.replace(':id', id ?? '');
+  const urlNodes = GET_PERSPECTIVE.replace(':id', id || '');
   const result = useQuery({
     queryKey: [urlNodes],
     queryFn: () => client.get(urlNodes),

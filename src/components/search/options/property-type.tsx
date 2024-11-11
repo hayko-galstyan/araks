@@ -62,14 +62,16 @@ export const renderProperty = (
               shape="square"
               size="small"
               icon={
-                (
+                icon ? (
                   <Icon
                     color="#414141"
                     icon={icon}
                     size={14}
                     style={{ display: 'flex', height: '100%', margin: '0 auto' }}
                   />
-                ) || <Araks />
+                ) : (
+                  <Araks />
+                )
               }
             />
           </Flex>

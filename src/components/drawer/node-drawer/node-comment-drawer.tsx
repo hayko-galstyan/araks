@@ -2,6 +2,7 @@ import { RightOutlined } from '@ant-design/icons';
 import { Button, Col, Drawer, DrawerProps, Row, Space, Spin } from 'antd';
 import { useGetNodeCommentsCount } from 'api/comments/use-get-node-comments-count';
 import { Icon } from 'components/icon';
+import { useGraph } from 'components/layouts/components/visualisation/wrapper';
 import { NotifyBadge } from 'components/notifications';
 import { Text } from 'components/typography';
 import { COLORS } from 'helpers/constants';
@@ -15,6 +16,7 @@ type Props = Partial<DrawerProps> & {
 
 export const NodeCommentDrawer = ({ children, nodeId, parentDrawerClosed = false, ...props }: Props) => {
   const sectionHeight = useGetHeaderHeight();
+  const { openNode, startOpenNode } = useGraph();
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const { data: commentsCount, isInitialLoading: commentsCountIsLoading } = useGetNodeCommentsCount(nodeId);
@@ -24,11 +26,17 @@ export const NodeCommentDrawer = ({ children, nodeId, parentDrawerClosed = false
       setOpenDrawer(false);
     }
   }, [parentDrawerClosed]);
+  useEffect(() => {
+    if (openNode?.autoCommentsIsOpen ) {
+      setOpenDrawer(true);
+      startOpenNode({autoCommentsIsOpen:false})
+    }
+  }, [openNode?.autoCommentsIsOpen, startOpenNode]);
 
   return (
     <>
       <NotifyBadge
-        color="#F97070"
+        color={COLORS.SECONDARY.STEEL_BLUE}
         count={commentsCountIsLoading ? <Spin tip="Loading" size="small" /> : commentsCount}
         offset={[-5, 10]}
       >

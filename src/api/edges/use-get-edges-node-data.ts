@@ -17,7 +17,7 @@ type Result = UseQueryResult<ETypeEdgeDataResponse> & {
 
 export const useGetEdgesNodeData = (queryParams: PageParameters, typeId?: string, options?: Options): Result => {
   const params = useParams();
-  const urlNodes = URL_EDGES_NODE_DATA.replace(':edge_type_id', typeId ?? '').replace(':project_id', params.id ?? ''); // #soonqube
+  const urlNodes = URL_EDGES_NODE_DATA.replace(':edge_type_id', typeId || '').replace(':project_id', params.id || '');
   const result = useQuery({
     queryKey: [urlNodes, queryParams],
     queryFn: () => client.get(urlNodes, { params: queryParams }).then((data) => data.data),

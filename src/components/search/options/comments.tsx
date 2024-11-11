@@ -1,22 +1,25 @@
 import { Badge, Flex, Image, Typography } from 'antd';
 import { TypeItem, StyledAvatar } from './styles';
 import { ReactComponent as Araks } from '../../icons/araks-tiny.svg';
-import { getAvatarPath } from '../../../helpers/utils';
-import { Icon } from '../../icon';
 import { Text } from '../../typography';
+import { extractTextFromHTML, getAvatarPath } from 'helpers/utils';
+import { Icon } from 'components/icon';
+import { COLORS } from 'helpers/constants';
 
 const { Paragraph } = Typography;
 
-export const renderNodes = (
-  project_id: string,
+export const renderComments = (
   id: string,
-  title: string,
-  color: string,
-  name: string,
+  project_id: string,
   privacy: string,
-  default_image: string,
-  icon: string,
-  node_type: string
+  title?: string,
+  icon?: string,
+  color?: string,
+  node_id?: string,
+  name?: string,
+  node_type?: string,
+  default_image?: string,
+  comments?: string
 ) => {
   const flexStyle = { gap: '10px', alignItems: 'center' };
   const imageContent = !!default_image?.length ? (
@@ -26,12 +29,12 @@ export const renderNodes = (
   );
 
   return {
-    key: `node-type${project_id}${id}`,
-    id,
-    mode: 'node',
+    key: `comments${project_id}${id}`,
+    id: id,
+    mode: 'comments',
     project_id: project_id,
     value: id,
-    node_id: id,
+    node_id: node_id,
     privacy,
     label: (
       <TypeItem>
@@ -42,15 +45,17 @@ export const renderNodes = (
               {name}
             </Paragraph>
             <Flex align="center" justify="start" gap="8px">
-              <Badge color={color} />
-              <Text style={{ fontSize: '12px' }}>{node_type}</Text>
+              <Badge color={color ? color : COLORS.PRIMARY.GRAY_LIGHT} />
+              <Text style={{ fontSize: 12, maxWidth: 250, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {node_type} / {extractTextFromHTML(comments || '')}
+              </Text>
             </Flex>
           </Flex>
         </Flex>
         <Flex style={{ width: '30%', justifyContent: 'flex-end', ...flexStyle }}>
           <Flex>
             <StyledAvatar
-              color={color}
+              color={color ? color : COLORS.PRIMARY.GRAY_LIGHT}
               shape="square"
               size="small"
               icon={

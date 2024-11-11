@@ -1,44 +1,47 @@
-import { ReactComponent as BarIcon } from 'components/icons/bar-chart.svg';
-import { ReactComponent as LineIcon } from 'components/icons/line-chart.svg';
-import { ReactComponent as PieIcon } from 'components/icons/pie-chart.svg';
-import { ReactComponent as TableIcon } from 'components/icons/table-icon.svg';
-import { ReactComponent as TextEditorIcon } from 'components/icons/text-editor.svg';
-import { ReactComponent as CardIcon } from 'components/icons/analytic-card.svg';
+import {
+  BarChartOutlined,
+  CreditCardOutlined,
+  IdcardOutlined,
+  LineChartOutlined,
+  PieChartOutlined,
+  TableOutlined,
+} from '@ant-design/icons';
 
 export const tools = [
   {
     name: 'chart',
-    icon: <LineIcon />,
+    icon: <LineChartOutlined style={{ fontSize: 30 }} />,
     type: 'line',
     title: 'Chart/Line',
   },
   {
     name: 'chart',
-    icon: <PieIcon />,
-    type: 'pie',
-    title: 'Chart/Pie',
-  },
-  {
-    name: 'chart',
-    icon: <BarIcon />,
+    icon: <BarChartOutlined style={{ fontSize: 30 }} />,
     type: 'bar',
     title: 'Chart/Bar',
   },
   {
+    name: 'chart',
+    icon: <PieChartOutlined style={{ fontSize: 30 }} />,
+    type: 'pie',
+    title: 'Chart/Pie',
+  },
+
+  {
     name: 'table',
-    icon: <TableIcon />,
+    icon: <TableOutlined style={{ fontSize: 30 }} />,
     type: 'table',
     title: 'Table',
   },
   {
     name: 'card',
-    icon: <CardIcon />,
+    icon: <CreditCardOutlined style={{ fontSize: 30 }} />,
     type: 'card',
     title: 'Card',
   },
   {
     name: 'text',
-    icon: <TextEditorIcon />,
+    icon: <IdcardOutlined style={{ fontSize: 30 }} />,
     type: 'editor',
     title: 'Text/Editor',
   },

@@ -16,6 +16,6 @@ export const AnalyticActionMenu = styled(Menu)`
   & .ant-menu-item {
     display: flex;
     align-items: center;
-    font-size: 14px;
+    padding: 5px;
   }
 `;

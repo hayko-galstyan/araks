@@ -28,12 +28,12 @@ export const useToolsetHandlers: UseToolsetHandlers = () => {
   });
 
   const handleAnalyticsClick = useCallback(() => {
-    navigate(PATHS.PROJECT_ANALYTICS.replace(':id', params.id || ''));
+    void navigate(PATHS.PROJECT_ANALYTICS.replace(':id', params.id || ''));
     setOpenToolset(false);
   }, [navigate, params.id, setOpenToolset]);
 
   const handleDocumentClick = useCallback(() => {
-    navigate(PATHS.PROJECT_DOCUMENTS.replace(':id', params.id || ''));
+    void navigate(PATHS.PROJECT_DOCUMENTS.replace(':id', params.id || ''));
     setOpenToolset(false);
   }, [navigate, params.id, setOpenToolset]);
 

@@ -1,5 +1,5 @@
 import { useAnalytics } from 'context/analytics';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { TToolData } from 'context/analytics/types';
 import { ColumnType } from 'antd/es/table';
 import { Tooltip } from 'antd';
@@ -7,42 +7,39 @@ import { DraggingContainer } from '../dragging';
 import { AnalyticDynamicTable } from './styles';
 import { COLORS } from 'helpers/constants';
 import { TColumnParam } from '../types';
+import { useGetTableExternalData } from 'api/analytics/use-get-table-external-data';
+import { ACTIONS } from 'context/analytics/reducer';
 
 const getTableColumns = (data: TToolData[], params: TColumnParam[]): ColumnType<unknown>[] => {
-  if (!data?.length) return [];
+  if (!data || !data.length) return [];
 
   const columns: ColumnType<unknown>[] = [];
-
-  // #sonarqube
-
-  data.forEach((item) => {
-    for (const prop in item) {
-      if (Object.prototype.hasOwnProperty.call(item, prop)) {
-        const columnParam = params.find((param: TColumnParam) => param.axis === prop);
-        if (columnParam && !columns.some((column) => column.key === prop)) {
-          const title = `${columnParam.project_type_name}.${columnParam.property_type_name}`;
-          columns.push({
-            key: prop,
-            title: (
-              <Tooltip
-                title={title}
-                color={COLORS.PRIMARY.BLUE}
-              >{`${columnParam.project_type_name}.${columnParam.property_type_name}`}</Tooltip>
-            ),
-            dataIndex: prop,
-            ellipsis: true,
-            width: 80,
-          });
-        }
+  for (let i = 0; i < data.length; i++) {
+    for (const prop in data[i]) {
+      const data = params.find((item: TColumnParam) => item.axis === prop);
+      if (data) {
+        const title = `${data.project_type_name}.${data.property_type_name}`;
+        columns.push({
+          key: prop,
+          title: (
+            <Tooltip
+              title={title}
+              color={COLORS.PRIMARY.BLUE}
+            >{`${data.project_type_name}.${data.property_type_name}`}</Tooltip>
+          ),
+          dataIndex: prop,
+          ellipsis: true,
+          width: 80,
+        });
       }
     }
-  });
-
+    return columns;
+  }
   return columns;
 };
 
 const getTableData = (data: TToolData[]) => {
-  if (!data?.length) return []; // Using optional chaining
+  if (!data || !data.length) return [];
 
   return data.map((item) => ({
     ...item,
@@ -50,24 +47,51 @@ const getTableData = (data: TToolData[]) => {
 };
 
 export const AnalyticsTable: React.FC<{ id: string }> = ({ id }) => {
-  const { tools, activeBoard } = useAnalytics();
+  const { tools, activeBoard, handleAction } = useAnalytics();
 
-  const selectedTool = tools?.[activeBoard]?.[id]; // Using optional chaining
+  const selectedTool = tools[activeBoard][id];
+  const columns = getTableColumns(selectedTool?.data, selectedTool.params as TColumnParam[]);
 
-  const columns = getTableColumns(selectedTool?.data, selectedTool?.params as TColumnParam[]); // Using optional chaining
-  const tableData = getTableData(selectedTool?.data); // Using optional chaining
+  const { data, isFetching, hasNextPage, fetchNextPage } = useGetTableExternalData(id, 1, {
+    enabled: !!selectedTool?.id,
+    onSuccess: (data) => {
+      const allData = data.pages.flatMap((page) => page.data);
+      handleAction({
+        type: ACTIONS.ADD_TABLE_DATA,
+        payload: {
+          id: selectedTool?.id,
+          data: allData,
+        },
+      });
+    },
+  });
+
+  const tableData = getTableData(selectedTool?.data || data);
+
+  const handleScroll = useCallback(
+    async (e: React.UIEvent<HTMLElement>) => {
+      const bottom = e.currentTarget.scrollHeight - e.currentTarget.scrollTop === e.currentTarget.clientHeight;
+
+      if (bottom && hasNextPage && !isFetching) {
+        await fetchNextPage();
+      }
+    },
+    [fetchNextPage, hasNextPage, isFetching]
+  );
 
   return (
     <DraggingContainer containerKey={id}>
       <AnalyticDynamicTable
-        key={id}
-        style={{ width: selectedTool?.width, maxHeight: selectedTool?.height }} // Using optional chaining
+        key={`table-analytic-${id}`}
+        style={{ width: selectedTool.width, height: selectedTool?.height }}
         columns={columns}
         dataSource={tableData}
         scroll={{
-          x: selectedTool?.width,
-          y: (selectedTool?.height ?? 0) - 100, // Using optional chaining with a fallback
+          x: selectedTool.width,
+          y: selectedTool.height,
         }}
+        loading={isFetching}
+        onScroll={handleScroll}
         pagination={false}
         sticky
       />

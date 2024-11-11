@@ -1,7 +1,13 @@
 import { PropertyTypes } from 'components/form/property/types';
 import { EdgeType } from 'types/node';
 import { IEnumProperty } from 'types/project-node-types-property';
-import { UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
+import {
+  FetchNextPageOptions,
+  InfiniteQueryObserverResult,
+  UseInfiniteQueryOptions,
+  UseQueryOptions,
+  UseQueryResult,
+} from '@tanstack/react-query';
 import { IDocumentsTypeData } from '../types/document-repository';
 import { IJiraProject } from '../types/jira-integration';
 import { AnyObject } from 'antd/es/_util/type';
@@ -187,6 +193,8 @@ export interface IProjectType {
 export interface IPerspectiveTypes {
   project_node_type_id: string;
 }
+
+export type IProjectTypeData = ProjectFullInfo;
 
 export type ProjectTypePropertyReturnData = {
   created_at: string;
@@ -662,4 +670,22 @@ export type TAnalyticsBoard = {
 export type TBoardUpdateParam = {
   id: string;
   chart_id: string | undefined;
+};
+
+export type TTableData = {
+  count: number;
+  data: AnyObject[];
+};
+
+export type TUseGetTableExternalData = (
+  id: string,
+  page: number,
+  options?: UseInfiniteQueryOptions<TTableData, Error>
+) => {
+  data: TTableData | undefined;
+  isLoading: boolean;
+  refetch: () => void;
+  isFetching?: boolean;
+  fetchNextPage: (options?: FetchNextPageOptions) => Promise<InfiniteQueryObserverResult<TTableData, Error>>;
+  hasNextPage: boolean | undefined;
 };

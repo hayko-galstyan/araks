@@ -14,13 +14,15 @@ export const Card: React.FC<{ id: string }> = ({ id }) => {
   const textAnimationStyle = {
     fontSize: 42,
     color: color,
-    animation: 'fadeIn 2s ease-in-out',
+    animation: 'fadeIn 3s ease-in-out',
   };
 
   return (
     <DraggingContainer containerKey={id}>
       <Flex align="center" justify="center" style={{ width: width, height: height }}>
-        <Text style={textAnimationStyle}>{valueFormatter(data?.[0].card.toString(), width - 50)}</Text>
+        <Text style={textAnimationStyle}>
+          {data[0]?.card ? valueFormatter(data?.[0]?.card?.toString(), width - 50) : 'No Data'}
+        </Text>
       </Flex>
     </DraggingContainer>
   );

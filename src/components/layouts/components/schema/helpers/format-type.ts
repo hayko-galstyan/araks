@@ -63,10 +63,37 @@ export const formattedTypes = (
   graph: Graph,
   nodesList: IProjectType[],
   edges: ProjectEdgeResponse[],
-  projectInfo: ContextTypeProject | null,
+  projectInfo: ContextTypeProject | null
 ) => {
   if (graph?.getNodes && graph.getNodes()) {
     const cells: Cell[] = [];
+
+    /** Set Grid layout if nodes have position 0 0 */
+    /** TODO: Make edge for grid layout */
+    /*
+      if (nodesList?.find((n) => n.fx === 0 && n.fy === 0)) {
+        const data = {
+          nodes: nodesList,
+          edges: [],
+          // edges: edges.map(e => ({
+          //   id: e.id,
+          //   source: e.source_id,
+          //   target: e.target_id
+          // })),
+        };
+
+        const dagreLayout = new GridLayout({
+          type: 'grid',
+          nodeSize: [200, 300],
+          cols: 7,
+          rows: 10,
+          width: window.innerWidth - 400,
+          height: window.innerHeight - 400,
+        });
+
+        dagreLayout.layout(data);
+      }
+      */
 
     for (const node of nodesList) {
       let formattedNode: INode = {} as INode;
@@ -75,7 +102,7 @@ export const formattedTypes = (
       const { properties } = node;
 
       for (const property of properties) {
-        if (property.name === 'default_image') continue;
+        if (property.name === "default_image" ) continue;
         const props = {
           allow: isPerspective() || isTemplate(),
           color: node.color,
@@ -95,7 +122,7 @@ export const formattedTypes = (
               color: node.color,
               ref_property_type_id: 'connection',
               multiple_type: multiple,
-            }),
+            })
           );
         }
       }

@@ -7,14 +7,14 @@ import { GET_PROJECT_NODE_TYPES_LIST, GET_PROJECT_NODE_TYPES_LIST_LEFT_MENU } fr
 
 const URL_PROJECT_NODE_TYPES_DELETE = '/projects-node-types/delete/:id';
 
-export const useDeleteProjectNodeType = (nodeTypeId: string, options?: UseQueryOptions) => {
+export const useDeleteProjectNodeType = (nodeTypeId = '', options: UseQueryOptions) => {
   const params = useParams();
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: () => client.delete(URL_PROJECT_NODE_TYPES_DELETE.replace(':id', nodeTypeId)),
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries([GET_PROJECT_NODE_TYPES_LIST.replace(':project_id', params.id ?? '')]);
-      queryClient.invalidateQueries([GET_PROJECT_NODE_TYPES_LIST_LEFT_MENU.replace(':project_id', params.id ?? '')]);
+      queryClient.invalidateQueries([GET_PROJECT_NODE_TYPES_LIST.replace(':project_id', params.id || '')]);
+      queryClient.invalidateQueries([GET_PROJECT_NODE_TYPES_LIST_LEFT_MENU.replace(':project_id', params.id || '')]);
       options?.onSuccess?.(data);
     },
     onError: errorMessage,

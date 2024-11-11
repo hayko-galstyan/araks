@@ -142,7 +142,7 @@ export const ParamsTools: ToolParamsType[] = [
       {
         type: TREESELECT,
         name: DINAMIC_FORM_NAME.Y_AXIS,
-        label: 'Card',
+        label: 'Properties',
         required: true,
         placeholder: 'Select property',
         message: 'Title is required',

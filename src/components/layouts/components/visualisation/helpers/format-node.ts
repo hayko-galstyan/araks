@@ -72,7 +72,7 @@ const formatNodeProperty = ({ typeName, properties }: FormatNodeProperty) => {
     },
     x: 0,
     y: 0,
-    img: `${default_image && process.env.REACT_APP_AWS_URL}${default_image}`,
+    img: `${default_image && process.env.REACT_APP_AWS_URL}${default_image}?key=${Date.now()}`,
     type: default_image ? 'image' : 'circle',
     nodeType: project_type_id,
     nodeTypeName: typeName,

@@ -105,17 +105,19 @@ export const ToolParams: React.FC = () => {
   useEffect(() => {
     paramsObjectRef.current = {};
     form.resetFields();
+    setChartParams([]);
     if (selectedTool?.action_type === UPDATE) {
       if (tools[activeBoard]) {
         const formData = tools[activeBoard][selectedTool?.id];
         paramsObjectRef.current = formData;
+        const isSimilarNodeTypeId = formData?.source_type_id === nodeTypeId;
         // check name and set form fields value
         switch (formData?.name) {
           case CHART: {
             form.setFieldsValue({
               title: formData.title,
-              yAxis: formData?.source_type_id === nodeTypeId ? formData?.params[1]?.property_type_id : null,
-              xAxis: formData?.source_type_id === nodeTypeId ? formData?.params[0]?.property_type_id : null,
+              yAxis: isSimilarNodeTypeId ? formData?.params[1]?.property_type_id : null,
+              xAxis: isSimilarNodeTypeId ? formData?.params[0]?.property_type_id : null,
               legend: formData.legend,
               operator: formData.operator,
               color: formData.color,
@@ -125,7 +127,7 @@ export const ToolParams: React.FC = () => {
           case TABLE: {
             form.setFieldsValue({
               title: formData.title,
-              columns: formData.params.map((item: AnyObject) => item.property_type_id),
+              columns: isSimilarNodeTypeId ? formData.params.map((item: AnyObject) => item.property_type_id) : null,
             });
             break;
           }
@@ -139,14 +141,14 @@ export const ToolParams: React.FC = () => {
           case CARD: {
             form.setFieldsValue({
               title: formData.title,
-              yAxis: formData?.source_type_id === nodeTypeId ? formData?.params[0]?.property_type_id : null,
+              yAxis: isSimilarNodeTypeId ? formData?.params[0]?.property_type_id : null,
               operator: formData.operator,
               color: formData.color,
             });
           }
         }
 
-        if (formData) {
+        if (formData && isSimilarNodeTypeId) {
           setChartParams(() =>
             formData?.params.map((item: AnyObject) => ({
               id: item.property_type_id,
@@ -340,16 +342,17 @@ export const ToolParams: React.FC = () => {
                 <React.Fragment key={item.name}>
                   {item.name !== DINAMIC_FORM_NAME.OPERATOR && (
                     <Form.Item
-                      label={item.label}
+                      label={<Text style={{ fontSize: 14, fontWeight: 400 }}>{item.label}</Text>}
                       name={item.name}
                       rules={[{ required: item.required, message: item.message }]}
                     >
                       {item.type === INPUT ? (
-                        <Input placeholder={item.placeholder} />
+                        <Input className="analytic-form-input" placeholder={item.placeholder} />
                       ) : item.type === COLOR ? (
                         <ColorPicker defaultValue={item.color} />
                       ) : item.type === SELECT ? (
                         <Select
+                          className="analytic-form-select"
                           placeholder={item.placeholder}
                           defaultValue={item.options?.at(0)?.value}
                           value={undefined}
@@ -358,6 +361,7 @@ export const ToolParams: React.FC = () => {
                         />
                       ) : item.type === TREESELECT ? (
                         <TreeSelect
+                          className="analytic-form-tree-select"
                           placeholder={item.placeholder}
                           showSearch={false}
                           treeLine
@@ -381,7 +385,7 @@ export const ToolParams: React.FC = () => {
                           }}
                           theme="snow"
                           placeholder={item.placeholder}
-                          style={{ background: PRIMARY.WHITE, minHeight: 300 }}
+                          style={{ background: PRIMARY.WHITE, minHeight: 300, fontSize: 14 }}
                           className="analytic-editor"
                         />
                       ) : null}

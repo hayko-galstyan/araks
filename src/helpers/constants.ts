@@ -165,6 +165,8 @@ export enum AnalyticToolForm {
 export enum AnalyticActionTypes {
   CREATE = 'CREATE',
   UPDATE = 'UPDATE',
+  REMOVE = 'REMOVE',
+  TO_BE_CENTER = 'TO_BE_CENTER',
 }
 
 export enum AnalyticOpearators {
@@ -230,6 +232,7 @@ export const ANALYTICS = {
   COLOR_INTERVAL: 10,
   AXIS_SIZE: 35,
   LEGEND_TOOL_WIDTH: 200,
+  ANALYTIC_TABLE_PAGE_SIZE: 20,
 };
 
 export const patterns = {

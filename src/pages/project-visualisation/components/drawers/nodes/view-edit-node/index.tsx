@@ -33,6 +33,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import { JiraIssueRequestType } from 'api/jira/use-create-issue';
 import { useJira } from 'components/drawer/tool-set/components/jira/context';
 import { ToolSetJira } from 'components/drawer/tool-set/components/jira';
+import { useLocation } from 'react-router-dom';
 
 export type VIewDataType = NodeDataResponse | undefined;
 
@@ -59,10 +60,11 @@ const getValue = (item: NodePropertiesValues) => {
 };
 
 export const ViewEditNodeDrawer = () => {
+  const { state } = useLocation();
   const [form] = Form.useForm();
   const [selectedView, setSelectedView] = useState<VIewDataType>();
 
-  const { graph, openNode, finishOpenNode } = useGraph() ?? {};
+  const { graph, openNode, finishOpenNode, startOpenNode } = useGraph() ?? {};
   const { projectInfo } = useProject();
   const { setNodeId, setResetOpenViews } = useJira();
 
@@ -148,15 +150,11 @@ export const ViewEditNodeDrawer = () => {
   const updateNode = useCallback(
     (variable: NodeDataSubmit) => {
       const splitName = variable.name.length > 15 ? `${variable.name.slice(0, 15)}...` : variable.name;
-
       graph.updateItem(variable.nodeId ?? '', {
         label: splitName,
         originalName: variable.name,
         type: variable.default_image ? 'image' : 'circle',
-        img: variable.default_image ? `${process.env.REACT_APP_AWS_URL}${variable.default_image}` : undefined,
-        style: {
-          fill: variable.default_image ? '#000000' : 'white',
-        },
+        img: variable.default_image ? `${process.env.REACT_APP_AWS_URL}${variable.default_image}?key=${Date.now()}` : undefined,
         edgeCount: variable.edges?.length,
       });
     },
@@ -260,6 +258,11 @@ export const ViewEditNodeDrawer = () => {
     }
     return () => form.resetFields();
   }, [form, nodeData, setFormValue]);
+  useEffect(()=>{
+    if(state && state.autoCommentsIsOpen){
+      startOpenNode({ id: state.node_id, isOpened: true, autoCommentsIsOpen: true });
+    }
+  },[state])
 
   const jiraTitle = (
     <Row>
@@ -309,6 +312,7 @@ export const ViewEditNodeDrawer = () => {
 
   return (
     <Drawer
+    open={openNode?.isOpened}
       headerStyle={{
         borderTop: `6px solid ${nodeData?.nodeType?.color}`,
       }}
@@ -318,21 +322,22 @@ export const ViewEditNodeDrawer = () => {
         isJira ? (
           jiraTitle
         ) : (
-          <NodeViewTitle
-            isJira={!nodeData?.jiraConnectProject}
-            setIsJira={setIsJira}
-            setIsEdit={setIsEdit}
-            isEdit={isEdit}
-            id={nodeData?.id as string}
-            name={nodeData?.nodeType?.name ?? ''}
-            onClose={onClose}
-            canEdit={canEdit}
-            parentDrawerClosed={openNode?.isOpened ? openNode.isOpened : false}
-          />
+          <>
+            <NodeViewTitle
+              isJira={!nodeData?.jiraConnectProject}
+              setIsJira={setIsJira}
+              setIsEdit={setIsEdit}
+              isEdit={isEdit}
+              id={nodeData?.id as string}
+              name={nodeData?.nodeType?.name ?? ''}
+              onClose={onClose}
+              canEdit={canEdit}
+              parentDrawerClosed={openNode?.isOpened ? openNode.isOpened : false}
+            />
+          </>
         )
       }
       footer={footer}
-      open={openNode?.isOpened}
     >
       {renderContent()}
     </Drawer>

@@ -103,3 +103,16 @@ export const NodePropertyItem = styled.div`
     font-size: 20px;
   }
 `;
+export const CommentsItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  margin-top: 10px;
+
+  .node-name {
+    color: #414141;
+    letter-spacing: 1.4px;
+    font-weight: 600;
+    font-size: 20px;
+  }
+`;

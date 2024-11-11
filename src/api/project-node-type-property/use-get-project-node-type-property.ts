@@ -17,8 +17,8 @@ type Result = UseQueryResult<ProjectNodeTypePropertyReturnData>;
 export const useGetProjectNodeTypeProperty = (propertyId?: string, options?: Options): Result => {
   const isTemplateEditPage = useIsTemplateEditPage();
 
-  const urlNodes = GET_PROJECT_NODE_TYPE_PROPERTY.replace(':type_property_id', propertyId ?? '');
-  const urlTemplate = URL_TEMPLATE_NODE_TYPE_PROPERTY.replace(':id', propertyId ?? '');
+  const urlNodes = GET_PROJECT_NODE_TYPE_PROPERTY.replace(':type_property_id', propertyId || '');
+  const urlTemplate = URL_TEMPLATE_NODE_TYPE_PROPERTY.replace(':id', propertyId || '');
   const result = useQuery({
     queryKey: [GET_PROJECT_NODE_TYPE_PROPERTY],
     queryFn: () => client.get(isTemplateEditPage ? urlTemplate : urlNodes),

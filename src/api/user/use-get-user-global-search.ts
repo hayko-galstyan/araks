@@ -1,6 +1,7 @@
 import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import { errorMessage } from 'helpers/utils';
 import client from '../client';
+import { CommentsType } from 'api/visualisation/use-get-search';
 
 export type NodeType = {
   project_id: string;
@@ -57,6 +58,7 @@ type UsersGlobalSearchResponseData = {
   projects: ProjectType[];
   types: TypeProp[];
   properties: PropertyType[];
+  comments: CommentsType[]
 };
 
 type Options = UseQueryOptions<QueryResponse, Error, QueryResponse>;
@@ -67,8 +69,8 @@ type QueryResponse = {
 
 export const useGetUserGlobalSearch = (
   url: string,
-  search: string,
   options: Options = { enabled: false },
+  search: string
 ): QueryResponse => {
   const result = useQuery({
     queryKey: [url, search],

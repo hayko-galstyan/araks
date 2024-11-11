@@ -18,7 +18,7 @@ export const useMoveProjectToAll = (folderId?: string) => {
       return client.post(URL.replace(':projectId', projectId.toString()), {});
     },
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries([GET_FOLDER_PROJECTS_LIST.replace(':id', folderId ?? '')]);
+      queryClient.invalidateQueries([GET_FOLDER_PROJECTS_LIST.replace(':id', folderId || '')]);
       queryClient.invalidateQueries([GET_PROJECTS_LIST]);
       queryClient.invalidateQueries([GET_FOLDERS_LIST]);
     },

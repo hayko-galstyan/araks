@@ -19,7 +19,7 @@ export const useGetProjectNodeTypeProperties = (nodeTypeId?: string, options?: O
 
   const urlNodes = (
     isPublicPage ? GET_PUBLIC_PROJECT_NODE_TYPE_PROPERTIES_LIST : GET_PROJECT_NODE_TYPE_PROPERTIES_LIST
-  ).replace(':node_type_id', nodeTypeId ?? '');
+  ).replace(':node_type_id', nodeTypeId || '');
   const result = useQuery({
     queryKey: [urlNodes],
     queryFn: () => client.get(urlNodes).then((data) => data.data),

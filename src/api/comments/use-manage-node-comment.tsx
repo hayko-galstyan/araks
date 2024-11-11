@@ -12,8 +12,8 @@ export const useManageNodeComment = (nodeId?: string) => {
       return client[RequestTypes.Post](URL_COMMENT_NODES_CREATE, values);
     },
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries([URL_COMMENTS_NODES_LIST.replace(':node_id', nodeId ?? '')]); // #soonqube
-      queryClient.invalidateQueries([URL_COMMENT_NODES_COUNT.replace(':id', nodeId ?? '')]); // #soonqube
+      queryClient.invalidateQueries([URL_COMMENTS_NODES_LIST.replace(':node_id', nodeId || '')]);
+      queryClient.invalidateQueries([URL_COMMENT_NODES_COUNT.replace(':id', nodeId || '')]);
     },
     onError: errorMessage,
   });

@@ -16,9 +16,9 @@ type Options = UseQueryOptions<ReturnData, Error, Data>;
 type Result = UseQueryResult<Data>;
 
 export const useGetProjectEdgeTypes = (sourceId?: string, targetId?: string, options?: Options): Result => {
-  const urlTypes = GET_PROJECT_EDGE_TYPES.replace(':source_type_id', sourceId ?? '').replace(
+  const urlTypes = GET_PROJECT_EDGE_TYPES.replace(':source_type_id', sourceId || '').replace(
     ':target_type_id',
-    targetId ?? '',
+    targetId || ''
   );
 
   const result = useQuery({

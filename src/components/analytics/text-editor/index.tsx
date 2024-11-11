@@ -12,6 +12,7 @@ export const TextEditor: React.FC<{ id: string }> = ({ id }) => {
   return (
     <DraggingContainer containerKey={id}>
       <TextEditorContainer
+        key={`analytic-text-editor-${id}`}
         className="ql-editor"
         width={selectedTool.width}
         height={selectedTool.height}

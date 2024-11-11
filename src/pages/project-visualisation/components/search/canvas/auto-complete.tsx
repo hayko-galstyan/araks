@@ -14,6 +14,7 @@ import { formattedData } from 'components/layouts/components/visualisation/helpe
 import { useGetData } from 'api/visualisation/use-get-data';
 import { graphRender } from 'components/layouts/components/visualisation/helpers/utils';
 import { useParams } from 'react-router-dom';
+import { renderComments } from './options/comment';
 
 type FilterOption = boolean | FilterFunc<{ key: string; value: string; label: JSX.Element }> | undefined;
 
@@ -26,7 +27,7 @@ type Props = React.FC<{
 }>;
 
 export const AutoComplete: Props = ({ search, setSearch, isEnterSearch, setIsEnterSearch, collapsed }) => {
-  const { graph, setGraphInfo } = useGraph();
+  const { graph, setGraphInfo, startOpenNode } = useGraph();
   const { id } = useParams();
 
   useGetData(
@@ -63,8 +64,11 @@ export const AutoComplete: Props = ({ search, setSearch, isEnterSearch, setIsEnt
     },
   });
 
-  const onSelect = (value: string, item: { id: string; mode: string; value: string }) => {
-    mutate({ id: item.id, action: item.mode });
+  const onSelect = (value: string, item: { id: string; mode: string; value: string; node_id?: string }) => {
+    if (item.mode === 'comment') {
+      mutate({ id: item.node_id || '', action: 'node' });
+      startOpenNode({ id: item.node_id, isOpened: true, autoCommentsIsOpen: true });
+    } else mutate({ id: item.id, action: item.mode });
   };
   const nodeTypes = useMemo(
     () => data.nodeTypes?.map(({ id, label, color }) => renderTypes(id, label, color, search ?? '')),
@@ -75,6 +79,20 @@ export const AutoComplete: Props = ({ search, setSearch, isEnterSearch, setIsEnt
     () => data.edgeTypes?.map((edge) => renderEdgeTypes(edge, search ?? '')),
     [data.edgeTypes, search]
   );
+  const comments = useMemo(
+    () =>
+      data.comments?.map((comment, index) =>
+        renderComments(
+          comment.id,
+          comment.node_id,
+          comment.comments,
+          search ?? '',
+          index
+        )
+      ) ?? [],
+    [data.comments, search]
+  );
+  
 
   const nodeProperties = useMemo(
     () => data.nodeProperties?.map((node) => renderNodeProperties(search ?? '', node)),
@@ -86,7 +104,7 @@ export const AutoComplete: Props = ({ search, setSearch, isEnterSearch, setIsEnt
     [data.edgeProperties, search]
   );
 
-  const options = edgeProperties?.concat(edgeTypes).concat(nodeProperties).concat(nodeTypes);
+  const options = edgeProperties?.concat(edgeTypes).concat(nodeProperties).concat(nodeTypes).concat(comments);
 
   const filterOption: FilterOption = (inputValue, option) => {
     return option!.key?.toUpperCase().indexOf(option?.key.toUpperCase() ?? '') !== -1;
@@ -95,7 +113,7 @@ export const AutoComplete: Props = ({ search, setSearch, isEnterSearch, setIsEnt
   return (
     <AntAutoComplete
       popupClassName="search-visualisation"
-      dropdownMatchSelectWidth={400}
+      popupMatchSelectWidth={400}
       style={{ width: 400 }}
       dropdownStyle={{
         left: collapsed ? 490 : 30,

@@ -18,24 +18,22 @@ export const DownloadAction = ({ nodeTypeIds, ...props }: IDownloadActionProps) 
   const [loading, setLoading] = useState(false);
   const { data: projectData } = useGetProjectInfo({ id: params.id }, { enabled: !!params.id });
   const token = useLocalStorageGet<string>(AUTH_KEYS.TOKEN, '');
-
   const handleDownload = async () => {
     if (nodeTypeIds.length > 35) {
       message.info('Please select maximum 35 types');
-      return;
-    }
-
-    if (nodeTypeIds?.length) {
-      setLoading(true);
-      await DownloadFile(nodeTypeIds, false, token, '', projectData?.title);
-      setLoading(false);
+    } else {
+      if (nodeTypeIds?.length) {
+        setLoading(true);
+        await DownloadFile(nodeTypeIds, false, token, '', projectData?.title);
+        setLoading(false);
+      }
     }
   };
 
   return (
     <MainActionButton
       disabled={loading}
-      helpText='Export Data'
+      helpText="Export Data"
       {...props}
       icon={<UploadOutlined />}
       onClick={handleDownload}

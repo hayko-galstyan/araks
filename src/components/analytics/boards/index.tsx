@@ -3,8 +3,8 @@ import { BoardItem, BoardsContainer } from './styles';
 import { Text } from 'components/typography';
 import { Input } from 'components/input';
 import { COLORS } from 'helpers/constants';
-import { Flex, Typography } from 'antd';
-import { SyncOutlined } from '@ant-design/icons';
+import { Flex, Tooltip, Typography } from 'antd';
+import { SyncOutlined, UploadOutlined } from '@ant-design/icons';
 import { useAnalytics } from 'context/analytics';
 import { ACTIONS } from 'context/analytics/reducer';
 import { useCreateNewBoard } from 'api/analytics/use-create-new-board';
@@ -13,7 +13,6 @@ import { useChangeBoard } from 'api/analytics/use-change-board';
 import { useDeleteBoard } from 'api/analytics/use-delete-board';
 import { ReactComponent as RemoveIcon } from 'components/icons/remove.svg';
 import { ReactComponent as AddBoardIcon } from 'components/icons/plus-icon.svg';
-import { ReactComponent as ExportBoard } from 'components/icons/import-file.svg';
 import { TBoardParam } from '../types';
 
 const { Paragraph } = Typography;
@@ -167,7 +166,9 @@ export const Boards: React.FC<TBoardParam> = ({ onHandleScreenShot, onUpdateBoar
           }}
           onClick={onHandleScreenShot}
         >
-          <ExportBoard width={16} height={16} />
+          <Tooltip title="Export">
+            <UploadOutlined />
+          </Tooltip>
         </BoardItem>
       </BoardsContainer>
     </>

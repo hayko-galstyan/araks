@@ -38,7 +38,7 @@ export const transformDataToTreeSelect = (data: TAnalyticsNodeTypeProperties): T
         project_type_id: data.id,
         type: prop.ref_property_type_id,
         value: prop.id,
-        key: `properties-${prop.id}`,
+        key: `property-${data.id}-${prop.id}`,
       })),
       ...(data.edges || []).map((edge) => ({
         title: (
@@ -50,7 +50,7 @@ export const transformDataToTreeSelect = (data: TAnalyticsNodeTypeProperties): T
         disabled: true,
         value: edge.id,
         name: edge.name,
-        key: `edge-${edge.id}`,
+        key: `edge-${data.id}-${edge.id}`,
         children: [
           ...(edge.properties || []).map((prop) => ({
             title: (
@@ -65,7 +65,7 @@ export const transformDataToTreeSelect = (data: TAnalyticsNodeTypeProperties): T
             target_edge_type_id: edge.id,
             type: prop.ref_property_type_id,
             value: prop.id,
-            key: `edge-properties-${prop.id}`,
+            key: `edge-property-${edge.id}-${prop.id}`,
           })),
           edge.target && {
             title: (
@@ -76,8 +76,8 @@ export const transformDataToTreeSelect = (data: TAnalyticsNodeTypeProperties): T
             ),
             disabled: true,
             name: edge.target.name,
-            key: `edge-target-${edge.target.id}`,
             value: edge.target.id,
+            key: `edge-target-${edge.id}-${edge.target.id}`,
             children: (edge.target.properties || []).map((targetProp) => ({
               title: (
                 <TreeSelectHeader gap={16} color={data.color}>
@@ -92,7 +92,7 @@ export const transformDataToTreeSelect = (data: TAnalyticsNodeTypeProperties): T
               project_type_name: edge.target.name,
               value: targetProp.id,
               type: targetProp.ref_property_type_id,
-              key: `edge-target-properties-${targetProp.id}`,
+              key: `edge-target-property-${edge.target.id}-${targetProp.id}`,
             })),
           },
         ].filter(Boolean),

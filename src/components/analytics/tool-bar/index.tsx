@@ -9,6 +9,7 @@ import { Text } from 'components/typography';
 import { ACTIONS } from 'context/analytics/reducer';
 import { useAnalytics } from 'context/analytics';
 import { TToolParams } from '../types';
+import { ToolsContainer } from '../styles';
 
 const { TOOLBAR } = ANALYTICS;
 const { MAIN_GRAY, ANALYTICS: COLORS_ANALYTICS } = COLORS;
@@ -71,7 +72,10 @@ export const ToolBar: React.FC = () => {
       mask={false}
       push={false}
     >
-      <Flex gap={8} vertical={!isOpen} wrap justify="space-between" align="center">
+      <Text style={{ fontSize: 16, fontWeight: 700, display: 'block', textAlign: isOpen ? 'left' : 'center' }}>
+        Tools
+      </Text>
+      <ToolsContainer vertical={!isOpen} wrap>
         {tools.map((tool) => {
           const isActive = getActiveTool(tool.type);
           const isDisabled = isCheckDisableTools(tool.name);
@@ -82,7 +86,6 @@ export const ToolBar: React.FC = () => {
                   cursor: 'pointer',
                   opacity: isDisabled ? 0.5 : 1,
                   pointerEvents: isDisabled ? 'none' : 'auto',
-                  width: isOpen ? '30%' : '100%',
                   transform: `scale(${isActive ? 1.4 : 1})`,
                 }}
                 align="center"
@@ -94,7 +97,7 @@ export const ToolBar: React.FC = () => {
             </Tooltip>
           );
         })}
-      </Flex>
+      </ToolsContainer>
       {isOpen && <ToolParams />}
     </Drawer>
   );

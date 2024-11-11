@@ -6,13 +6,13 @@ import 'react-resizable/css/styles.css';
 import { useAnalytics } from 'context/analytics';
 import { ACTIONS } from 'context/analytics/reducer';
 import { useUpdateToolPosition } from 'api/analytics/use-update-tool-position';
-import { COLORS, ANALYTICS, AnalyticTools } from 'helpers/constants';
+import { ANALYTICS, AnalyticTools } from 'helpers/constants';
 import { TDraggingParams } from '../types';
 import { ReactComponent as ValidErrorIcon } from 'components/icons/analytic-not-data.svg';
+import { DashedLine } from '../styles';
 
 const { CANVAS } = ANALYTICS;
-const { PRIMARY } = COLORS;
-const { TEXT } = AnalyticTools;
+const { TEXT, CHART } = AnalyticTools;
 
 export const DraggingContainer: React.FC<TDraggingParams> = ({ containerKey, children }) => {
   const { tools, activeBoard, handleAction, canvasWidth } = useAnalytics();
@@ -99,7 +99,7 @@ export const DraggingContainer: React.FC<TDraggingParams> = ({ containerKey, chi
       let newY = e.clientY - position.offsetY;
 
       newX = Math.max(0, Math.min(newX, canvasWidth - selectedTools.width - 10));
-      newY = Math.max(0, Math.min(newY, CANVAS.MAX_HEIGHT - selectedTools.height - 60));
+      newY = Math.max(0, Math.min(newY, CANVAS.MAX_HEIGHT - selectedTools.height - 65));
 
       setPosition((prev) => ({ ...prev, x: newX, y: newY }));
     },
@@ -131,6 +131,14 @@ export const DraggingContainer: React.FC<TDraggingParams> = ({ containerKey, chi
     return !selectedTools?.valid;
   }, [selectedTools]);
 
+  const getAxisHeaderTitle = () => {
+    if (selectedTools?.name === TEXT) return undefined;
+    if (selectedTools?.name === CHART) {
+      return `${selectedTools?.params?.[0]?.property_type_name}/${selectedTools?.params?.[1]?.property_type_name}`;
+    }
+    return `${selectedTools?.params?.[0]?.property_type_name}`;
+  };
+
   useEffect(() => {
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
@@ -155,39 +163,10 @@ export const DraggingContainer: React.FC<TDraggingParams> = ({ containerKey, chi
     });
   }, [selectedTools]);
 
-  useEffect(() => {
-    if (position.x + selectedTools.width > canvasWidth) {
-      setPosition((prev) => ({ ...prev, x: canvasWidth - selectedTools.width - 10 }));
-    }
-  }, [canvasWidth, selectedTools.width, position.x]);
-
   return (
-    <Flex
-      ref={containerRef}
-      key={`tool-${selectedTools?.id}-${selectedTools?.type}`}
-      style={{
-        position: 'absolute',
-        top: position.y,
-        left: position.x,
-        zIndex: 1,
-        border: `0.5px solid ${PRIMARY.BLUE}70`,
-        cursor: isDragging ? 'grabbing' : 'grab',
-        borderRadius: 4,
-        width: selectedTools.width,
-        height: 'max-content',
-      }}
-      vertical
-      onDoubleClick={(e) => updateToolParams(e)}
-      onMouseDown={handleMouseDown}
-    >
-      <Header
-        isValid={checkToolValidation()}
-        title={selectedTools.title}
-        color={selectedTools.color}
-        board={activeBoard}
-        id={containerKey}
-      />
+    <>
       <ResizableBox
+        key={`tool-${selectedTools?.id}-${selectedTools?.type}`}
         width={selectedTools.width}
         height={selectedTools.height}
         minConstraints={[200, 150]}
@@ -195,25 +174,39 @@ export const DraggingContainer: React.FC<TDraggingParams> = ({ containerKey, chi
         onResizeStop={(e, { size }) => {
           updateContainerPosition(size);
         }}
-        resizeHandles={['se']}
+        resizeHandles={['se', 'sw', 'ne', 'nw']}
+        style={{
+          left: position?.x,
+          top: position?.y,
+          cursor: isDragging ? 'grabbing' : 'grab',
+          borderRadius: 4,
+        }}
       >
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            padding: 8,
-            overflowX:
-              selectedTools?.width * ANALYTICS.AXIS_SIZE - ANALYTICS.LEGEND_TOOL_WIDTH > selectedTools?.width
-                ? 'auto'
-                : 'hidden',
-            overflowY: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          {checkToolValidation() ? children : <ValidErrorIcon />}
-        </div>
+        <Flex ref={containerRef} vertical onDoubleClick={(e) => updateToolParams(e)} onMouseDown={handleMouseDown}>
+          <Header isValid={checkToolValidation()} toolAxis={getAxisHeaderTitle()} id={containerKey} />
+          <div
+            style={{
+              width: '100%',
+              height: 'max-content',
+              overflowX:
+                selectedTools?.width * ANALYTICS.AXIS_SIZE - ANALYTICS.LEGEND_TOOL_WIDTH > selectedTools?.width
+                  ? 'auto'
+                  : 'hidden',
+              overflowY: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            {checkToolValidation() ? children : <ValidErrorIcon />}
+          </div>
+        </Flex>
       </ResizableBox>
-    </Flex>
+      {isDragging && (
+        <>
+          <DashedLine width={canvasWidth} height={1} top={50} />
+          <DashedLine width={1} height={CANVAS.MAX_HEIGHT} left={50} />
+        </>
+      )}
+    </>
   );
 };
